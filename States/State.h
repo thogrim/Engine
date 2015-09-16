@@ -15,7 +15,7 @@ private:
 
 public:
 	void init();
-	//void processKeyPressed()=0;
+	virtual void processKeyPressed(sf::Keyboard::Key key)=0;
 	//void processAnotherEventType()=0;
 	virtual void update(const sf::Time& dt) = 0;
 	virtual void render() const = 0;

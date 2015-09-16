@@ -3,6 +3,7 @@
 Context::Context()
 	:window_(sf::RenderWindow(sf::VideoMode(800,600,32),"")),
 	states_(),
+	//debug
 	debug_(false),
 	timePassed_(sf::Time::Zero),
 	TimePerFpsUpdate_(sf::seconds(1.f)),
@@ -11,13 +12,15 @@ Context::Context()
 	fps_(0.f),
 	ups_(0.f),
 	debugFont_(),
+	debugString_(),
 	debugInfo_(){
+	//setting font and text
 	if (!debugFont_.loadFromFile("res/fonts/calibri.ttf")){
 		std::cout << "Error: could not load debug font! no info will appear on console!\n";
 	}
 	else{
 		debugInfo_.setFont(debugFont_);
-		debugInfo_.setString("Hello!");
+		//debugInfo_.setString("Hello!");
 		debugInfo_.setCharacterSize(20);
 		debugInfo_.setPosition(20.f, 20.f);
 		debugInfo_.setColor(sf::Color::Yellow);
@@ -50,7 +53,15 @@ void Context::changeDebug(){
 	debug_ = !debug_;
 }
 
+void Context::addDebugInfo(const std::string& info){
+	debugString_ << info;
+}
+
 void Context::update(const sf::Time& dt){
+	debugString_.str(std::string());
+	debugString_.clear();
+
+	//updatng fps
 	++updateCounter_;
 	timePassed_ += dt;
 	if (timePassed_ > TimePerFpsUpdate_){
@@ -60,9 +71,14 @@ void Context::update(const sf::Time& dt){
 		frameCounter_ = 0;
 		updateCounter_ = 0;
 	}
+
+	//adding debug info
+	debugString_ << "FPS: " << std::setprecision(3) << fps_ << " UPS:" << std::setprecision(4) << ups_ << " \n";
+	debugString_ << "State stack size: " << states_.size() << " \n";
 }
 
 void Context::renderDebug(){
+	debugInfo_.setString(debugString_.str());
 	window_.draw(debugInfo_);
 }
 

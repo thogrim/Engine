@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 #include <memory>
 #include "States/State.h"
 
@@ -18,8 +20,8 @@ public:
 
 	bool isValid() const;
 	void changeDebug();
+	void addDebugInfo(const std::string& info);
 
-	//void forwardKeyPressed
 	void update(const sf::Time& dt);
 	void render();
 private:
@@ -39,6 +41,7 @@ private:
 	float fps_;
 	float ups_;
 	sf::Font debugFont_;
+	std::ostringstream debugString_;
 	sf::Text debugInfo_;
 };
 

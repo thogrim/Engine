@@ -2,6 +2,7 @@
 
 #include "State.h"
 #include "../Context.h"
+#include "../World.h"
 
 class TitleState: public State{
 public:
@@ -14,12 +15,13 @@ private:
 	void loadSound();
 
 public:
+	void processKeyPressed(sf::Keyboard::Key key);
 	void update(const sf::Time& dt);
 	void render() const;
 	//void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-//private:
+private:
 	//ResourceHolders
-	//World world_;
+	World world_;
 };
 

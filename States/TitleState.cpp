@@ -16,13 +16,15 @@ void TitleState::loadFonts(){
 void TitleState::loadSound(){
 }
 
+void TitleState::processKeyPressed(sf::Keyboard::Key key){
+	if (key == sf::Keyboard::R)
+		world_.resetCamera();
+}
+
 void TitleState::update(const sf::Time& dt){
+	world_.update(dt);
 }
 
 void TitleState::render() const{
-	sf::CircleShape shape(30.f,20);
-	shape.setPosition(500.f, 500.f);
-	shape.setFillColor(sf::Color(112,134,65));
-	Context::instance().window_.draw(shape);
-	//Context::instance().window_.clear();
+	Context::instance().window_.draw(world_);
 }

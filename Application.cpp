@@ -2,6 +2,8 @@
 
 Application::Application(unsigned int width, unsigned int height, const std::string& title, unsigned int fps){
 	Context::instance().window_.setSize(sf::Vector2u(width, height));
+	//Context::instance().camera_.reset(sf::FloatRect(0.f,0.f,width,height));
+	//Context::instance().window_.setView(Context::instance().camera_);
 	Context::instance().window_.setTitle(title);
 	Context::instance().window_.setFramerateLimit(fps);
 	Context::instance().window_.setKeyRepeatEnabled(false);
@@ -25,12 +27,14 @@ void Application::processEvents(){
 			break;
 
 		case sf::Event::KeyPressed:
-			if (ev.key.code == sf::Keyboard::Escape)
+			if (ev.key.code == sf::Keyboard::Escape)//close window
 				Context::instance().window_.close();
-			else if (ev.key.code == sf::Keyboard::Tab)
+			else if (ev.key.code == sf::Keyboard::Tab)//turn on/off debug mode
 				Context::instance().changeDebug();
-			//else
-			//	Context::instance().forwardKeyPressed(ev.key.code);
+			//else if (ev.key.code == sf::Keyboard::R)//reset camera
+			//	Context::instance().resetCamera();
+			else
+				Context::instance().states_.back()->processKeyPressed(ev.key.code);
 			break;
 		}
 	}
@@ -38,6 +42,7 @@ void Application::processEvents(){
 
 void Application::update(const sf::Time& dt){
 	Context::instance().update(dt);
+	Context::instance().states_.back()->update(dt);
 }
 
 void Application::render(){

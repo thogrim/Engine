@@ -16,9 +16,9 @@ private:
 public:
 	void init();
 	virtual void processKeyPressed(sf::Keyboard::Key key)=0;
+	virtual void processResized(const sf::Event::SizeEvent& size)=0;
 	//void processAnotherEventType()=0;
 	virtual void update(const sf::Time& dt) = 0;
 	virtual void render() const = 0;
-	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
 };
 

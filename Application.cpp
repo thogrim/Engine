@@ -36,6 +36,12 @@ void Application::processEvents(){
 			else
 				Context::instance().states_.back()->processKeyPressed(ev.key.code);
 			break;
+
+		case sf::Event::Resized:
+			sf::FloatRect view(0, 0, ev.size.width, ev.size.height);
+			Context::instance().window_.setView(sf::View(view));
+			Context::instance().states_.back()->processResized(ev.size);
+			break;
 		}
 	}
 }

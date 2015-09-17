@@ -1,14 +1,13 @@
 #pragma once
 
 #include "State.h"
-#include "../Context.h"
+#include "TitleState.h"
 #include "../World.h"
-#include "GameState.h"
 
-class TitleState: public State{
+class GameState: public State{
 public:
-	TitleState();
-	~TitleState();
+	GameState();
+	~GameState();
 
 private:
 	void loadTextures();

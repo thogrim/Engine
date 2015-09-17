@@ -20,7 +20,8 @@ public:
 
 	bool isValid() const;
 	void changeDebug();
-	void addDebugInfo(const std::string& info);
+	std::ostringstream& operator<<(const std::string& info);
+	sf::Vector2i getMousePos();
 
 	void update(const sf::Time& dt);
 	void render();

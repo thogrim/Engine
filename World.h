@@ -8,12 +8,10 @@ public:
 	World();
 	~World();
 
-	//void zoomIn();
-	//void zoomOut();
-	//void moveCamera();
+	void resizeCamera(unsigned int width, unsigned int height);
 	void resetCamera();
 	void update(const sf::Time& dt);
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 private:
 	//world bounds
 	sf::Vector2f bounds_;

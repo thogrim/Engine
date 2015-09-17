@@ -20,9 +20,8 @@ Context::Context()
 	}
 	else{
 		debugInfo_.setFont(debugFont_);
-		//debugInfo_.setString("Hello!");
-		debugInfo_.setCharacterSize(20);
-		debugInfo_.setPosition(20.f, 20.f);
+		debugInfo_.setCharacterSize(17);
+		//debugInfo_.setPosition(20.f, 20.f);
 		debugInfo_.setColor(sf::Color::Yellow);
 	}
 }
@@ -53,8 +52,17 @@ void Context::changeDebug(){
 	debug_ = !debug_;
 }
 
-void Context::addDebugInfo(const std::string& info){
+//void Context::addDebugInfo(const std::string& info){
+//	debugString_ << info;
+//}
+
+std::ostringstream& Context::operator<<(const std::string& info){
 	debugString_ << info;
+	return debugString_;
+}
+
+sf::Vector2i Context::getMousePos(){
+	return sf::Mouse::getPosition(window_);
 }
 
 void Context::update(const sf::Time& dt){

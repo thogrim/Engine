@@ -1,8 +1,9 @@
 #include "Context.h"
 
 Context::Context()
-	:window_(sf::RenderWindow(sf::VideoMode(800,600,32),"")),
+	:window_(/*sf::RenderWindow(*/sf::VideoMode(800,600,32),""/*)*/),
 	states_(),
+	hasFocus_(true),
 	//debug
 	debug_(false),
 	timePassed_(sf::Time::Zero),
@@ -86,13 +87,15 @@ void Context::update(const sf::Time& dt){
 }
 
 void Context::renderDebug(){
-	debugInfo_.setString(debugString_.str());
-	window_.draw(debugInfo_);
-}
-
-void Context::render(){
-	states_.back()->render();
-	if (debug_)
-		renderDebug();
+	if (debug_){
+		debugInfo_.setString(debugString_.str());
+		window_.draw(debugInfo_);
+	}
 	++frameCounter_;
 }
+
+//void Context::render(){
+//	//states_.back()->render();
+//	if (debug_)
+//		renderDebug();
+//}

@@ -8,6 +8,8 @@
 #include <memory>
 #include "States/State.h"
 
+class State;
+
 class Context{
 	friend class Application;
 public:
@@ -17,6 +19,7 @@ public:
 	void pushState(State* state);
 	void popState();
 	void changeState(State* state);
+	//void changeState(State* state, Animation* animation);
 
 	bool isValid() const;
 	void changeDebug();
@@ -24,7 +27,7 @@ public:
 	sf::Vector2i getMousePos();
 
 	void update(const sf::Time& dt);
-	void render();
+	//void render();
 private:
 	Context();
 	Context(const Context&) = delete;
@@ -32,6 +35,7 @@ private:
 	void renderDebug();
 
 	std::vector<std::unique_ptr<State>> states_;
+	bool hasFocus_;
 
 	//debug info
 	bool debug_;

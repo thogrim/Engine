@@ -3,6 +3,7 @@
 #include "State.h"
 #include "TitleState.h"
 #include "../World.h"
+#include "../Actions/MoveBy.h"
 
 class GameState: public State{
 public:
@@ -24,5 +25,6 @@ public:
 private:
 	//ResourceHolders
 	World world_;
+	Actions::Action* action_;
 };
 

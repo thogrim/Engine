@@ -37,24 +37,38 @@ void Application::processEvents(){
 				Context::instance().states_.back()->processKeyPressed(ev.key.code);
 			break;
 
-		case sf::Event::Resized:
-			sf::FloatRect view(0, 0, ev.size.width, ev.size.height);
-			Context::instance().window_.setView(sf::View(view));
+		case sf::Event::Resized:{
+			//sf::FloatRect view(0, 0, static_cast<float>(ev.size.width), static_cast<float>(ev.size.height));
+			//Context::instance().window_.setView(sf::View(view));
 			Context::instance().states_.back()->processResized(ev.size);
+		}
+			break;
+
+		case sf::Event::LostFocus:
+			Context::instance().hasFocus_ = false;
+			break;
+
+		case sf::Event::GainedFocus:
+			Context::instance().hasFocus_ = true;
 			break;
 		}
 	}
 }
 
 void Application::update(const sf::Time& dt){
-	Context::instance().update(dt);
-	Context::instance().states_.back()->update(dt);
+	if (Context::instance().hasFocus_){
+		Context::instance().update(dt);
+		Context::instance().states_.back()->update(dt);
+	}
 }
 
 void Application::render(){
-	Context::instance().window_.clear(sf::Color::Black);
-	Context::instance().render();
-	Context::instance().window_.display();
+	if (Context::instance().hasFocus_){
+		Context::instance().window_.clear(sf::Color::Black);
+		Context::instance().states_.back()->render();
+		Context::instance().renderDebug();
+		Context::instance().window_.display();
+	}
 }
 
 void Application::run(){

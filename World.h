@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "Context.h"
+#include "VisitableShapes.h"
 
 class World: public sf::Drawable{
 public:
@@ -15,6 +16,9 @@ public:
 private:
 	//world bounds
 	sf::Vector2f bounds_;
+
+	sf::CircleShape shape_;
+	VisitableRectangleShape vshape_;
 
 	//world camera
 	sf::View camera_;

@@ -2,22 +2,33 @@
 
 World::World()
 	:bounds_(600.f,400.f),
+	shape_(100,3),
+	vshape_(sf::Vector2f(100.f, 50.f)),
+	//rshape_(sf::Vector2f(100.f, 50.f)),
 	camera_(Context::instance().window_.getView()),
 	cameraSpeed_(300.f,300.f),
 	currentZoom_(1.f),
 	zoomSpeed_(0.99f),
 	maxZoomIn_(0.1f),
 	maxZoomOut_(10.f){
+	//shape_.setPosition(200, 100);
+	shape_.setOrigin(100.f, 100.f);
+	shape_.setFillColor(sf::Color::Green);
+	vshape_.setPosition(200.f, 200.f);
+	//vshape_.setOrigin(100.f, 100.f);
+	vshape_.setFillColor(sf::Color::Blue);
+	//rshape_.setPosition(200.f, 300.f);
+	////vshape_.setOrigin(100.f, 100.f);
+	//rshape_.setFillColor(sf::Color::Red);
 }
 
 World::~World(){
 }
 
 void World::resizeCamera(unsigned int width, unsigned int height){
-	auto dwidth = width*currentZoom_ - camera_.getSize().x;
-	auto dheight = height*currentZoom_ - camera_.getSize().y;
+	float dwidth = width*currentZoom_ - camera_.getSize().x;
+	float dheight = height*currentZoom_ - camera_.getSize().y;
 	camera_.move(dwidth / 2, dheight / 2);
-	//camera_.setCenter(camera_.getCenter().x + dw / 2, camera_.getCenter().y + dh / 2);
 	camera_.setSize(width*currentZoom_, height*currentZoom_);
 }
 
@@ -37,6 +48,16 @@ void World::update(const sf::Time& dt){
 		camera_.move(0, cameraSpeed_.y*dt.asSeconds());
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		camera_.move(-cameraSpeed_.x*dt.asSeconds(), 0);
+
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+	//	std::cout << shape_.getPoint(0).x << " " << shape_.getPoint(0).y << std::endl
+	//		<< shape_.getPoint(1).x << " " << shape_.getPoint(1).y << std::endl
+	//		<< shape_.getPoint(2).x << " " << shape_.getPoint(2).y << std::endl
+	//		<< rshape_.getPoint(0).x << " " << rshape_.getPoint(0).y << std::endl
+	//		<< rshape_.getPoint(1).x << " " << rshape_.getPoint(1).y << std::endl
+	//		<< rshape_.getPoint(2).x << " " << rshape_.getPoint(2).y << std::endl
+	//		<< rshape_.getPoint(3).x << " " << rshape_.getPoint(3).y << std::endl;
+	//}
 
 	//zooming
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
@@ -65,7 +86,7 @@ void World::update(const sf::Time& dt){
 }
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-	sf::View currentView = Context::instance().window_.getView();
+	sf::View previousView = Context::instance().window_.getView();
 	Context::instance().window_.setView(camera_);
 
 	//drawing bounds of the world
@@ -75,6 +96,11 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	bounds.setFillColor(sf::Color::Transparent);
 	target.draw(bounds);
 
-	Context::instance().window_.setView(currentView);
+	//drawing test shape
+	target.draw(shape_);
+	target.draw(vshape_);
+	//target.draw(rshape_);
+
+	Context::instance().window_.setView(previousView);
 }
 

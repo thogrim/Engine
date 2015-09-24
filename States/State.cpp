@@ -1,13 +1,21 @@
 #include "State.h"
 
-State::State(){
+State::State()
+	:camera_(),
+	textures_(),
+	fonts_(){
 }
 
 State::~State(){
 }
 
 void State::init(){
-	loadTextures();
-	loadFonts();
-	loadSound();
+	try{
+		loadTextures();
+		loadFonts();
+		loadSound();
+	}
+	catch (std::runtime_error& e){
+		std::cout << e.what() << std::endl;
+	}
 }

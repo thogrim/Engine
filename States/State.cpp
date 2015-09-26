@@ -1,15 +1,15 @@
 #include "State.h"
+#include "../Application.h"
 
-State::State()
-	:camera_(),
-	textures_(),
-	fonts_(){
+State::State(Application& app)
+	:app_(app),
+	camera_(app_.getWindow().getView()){
 }
 
 State::~State(){
 }
 
-void State::init(){
+void State::loadResources(){
 	try{
 		loadTextures();
 		loadFonts();

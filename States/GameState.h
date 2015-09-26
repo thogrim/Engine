@@ -1,13 +1,15 @@
 #pragma once
 
 #include "State.h"
-#include "TitleState.h"
 #include "../World.h"
-#include "../Actions/MoveBy.h"
+
+namespace Actions{
+	class Action;
+}
 
 class GameState: public State{
 public:
-	GameState();
+	GameState(Application& app);
 	~GameState();
 
 private:
@@ -19,8 +21,8 @@ public:
 	void processKeyPressed(sf::Keyboard::Key key);
 	void processResized(const sf::Event::SizeEvent& size);
 	void update(const sf::Time& dt);
-	void render() const;
-	//void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	//void render() const;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
 	//ResourceHolders

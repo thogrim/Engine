@@ -1,13 +1,61 @@
 #include "Application.h"
+#include "ResourcesIDs.h"
+#include "States/TitleState.h"
 
-Application::Application(unsigned int width, unsigned int height, const std::string& title, unsigned int fps){
-	Context::instance().window_.setSize(sf::Vector2u(width, height));
-	//Context::instance().camera_.reset(sf::FloatRect(0.f,0.f,width,height));
-	//Context::instance().window_.setView(Context::instance().camera_);
-	Context::instance().window_.setTitle(title);
-	Context::instance().window_.setFramerateLimit(fps);
-	Context::instance().window_.setKeyRepeatEnabled(false);
-	Context::instance().pushState(new TitleState());
+Application::Console::Console()
+	:up_(false),
+	timeSinceFpsUpdate_(sf::Time::Zero),
+	TimePerFpsUpdate_(sf::seconds(1.f)),
+	frameCounter_(0),
+	updateCounter_(0),
+	currentFps_(0.f),
+	currentUps_(0.f),
+	font_(),
+	stream_(),
+	text_(){
+	if (!font_.loadFromFile("res/fonts/calibri.ttf")){
+		std::cout << "Error: could not load console font! no info will appear on console!\n";
+	}
+	else{
+		text_.setFont(font_);
+		text_.setCharacterSize(17);
+		text_.setColor(sf::Color::Yellow);
+	}
+}
+
+void Application::Console::update(const sf::Time& dt){
+	stream_.str(std::string());
+	stream_.clear();
+
+	//updatng fps
+	++updateCounter_;
+	timeSinceFpsUpdate_ += dt;
+	if (timeSinceFpsUpdate_ > TimePerFpsUpdate_){
+		currentFps_ = frameCounter_ / timeSinceFpsUpdate_.asSeconds();
+		currentUps_ = updateCounter_ / timeSinceFpsUpdate_.asSeconds();
+		timeSinceFpsUpdate_ = sf::Time::Zero;
+		frameCounter_ = 0;
+		updateCounter_ = 0;
+	}
+
+	//adding debug info
+	stream_ << "FPS: " << std::setprecision(3) << currentFps_ << " UPS:" << std::setprecision(4) << currentUps_ << " \n";
+}
+
+Application::Application(unsigned int width, unsigned int height, const std::string& title, unsigned int fps)
+	:window_(sf::VideoMode(width, height, 32), title),
+	hasFocus_(true),
+	states_(),
+	console_(){
+	window_.setFramerateLimit(fps);
+	try{
+		ResourcesIDs::readIDs();
+	}
+	catch (std::runtime_error& e){
+		std::cout << e.what() << std::endl;
+	}
+	std::unique_ptr<State> beginState(new TitleState(*this));
+	states_.push_back(std::move(beginState));
 }
 
 Application::Application()
@@ -17,57 +65,72 @@ Application::Application()
 Application::~Application(){
 }
 
+sf::RenderWindow& Application::getWindow(){
+	return window_;
+}
+
+void Application::changeState(State* state){
+	states_.pop_back();
+	std::unique_ptr<State> newState(state);
+	states_.push_back(std::move(newState));
+}
+
+std::ostringstream& Application::operator<<(const std::string& info){
+	console_.stream_ << info;
+	return console_.stream_;
+}
+
 void Application::processEvents(){
 	sf::Event ev;
-	while (Context::instance().window_.pollEvent(ev)){
+	while (window_.pollEvent(ev)){
 		switch (ev.type){
 
 		case sf::Event::Closed:
-			Context::instance().window_.close();
+			window_.close();
 			break;
 
 		case sf::Event::KeyPressed:
 			if (ev.key.code == sf::Keyboard::Escape)//close window
-				Context::instance().window_.close();
-			else if (ev.key.code == sf::Keyboard::Tab)//turn on/off debug mode
-				Context::instance().changeDebug();
-			//else if (ev.key.code == sf::Keyboard::R)//reset camera
-			//	Context::instance().resetCamera();
+				window_.close();
+			else if (ev.key.code == sf::Keyboard::Tab)//turn on/off concole
+				console_.up_ = !console_.up_;
 			else
-				Context::instance().states_.back()->processKeyPressed(ev.key.code);
+				states_.back()->processKeyPressed(ev.key.code);
 			break;
 
-		case sf::Event::Resized:{
-			//sf::FloatRect view(0, 0, static_cast<float>(ev.size.width), static_cast<float>(ev.size.height));
-			//Context::instance().window_.setView(sf::View(view));
-			Context::instance().states_.back()->processResized(ev.size);
-		}
+		case sf::Event::Resized:
+			states_.back()->processResized(ev.size);
 			break;
 
 		case sf::Event::LostFocus:
-			Context::instance().hasFocus_ = false;
+			hasFocus_ = false;
 			break;
 
 		case sf::Event::GainedFocus:
-			Context::instance().hasFocus_ = true;
+			hasFocus_ = true;
 			break;
 		}
 	}
 }
 
 void Application::update(const sf::Time& dt){
-	if (Context::instance().hasFocus_){
-		Context::instance().update(dt);
-		Context::instance().states_.back()->update(dt);
+	if (hasFocus_){
+		console_.update(dt);
+		console_.stream_ << "State stack size: " << states_.size() << std::endl;
+		states_.back()->update(dt);
 	}
 }
 
 void Application::render(){
-	if (Context::instance().hasFocus_){
-		Context::instance().window_.clear(sf::Color::Black);
-		Context::instance().states_.back()->render();
-		Context::instance().renderDebug();
-		Context::instance().window_.display();
+	if (hasFocus_){
+		++console_.frameCounter_;
+		window_.clear(sf::Color::Black);
+		window_.draw(*states_.back());
+		if (console_.up_){
+			console_.text_.setString(console_.stream_.str());
+			window_.draw(console_.text_);
+		}
+		window_.display();
 	}
 }
 
@@ -76,11 +139,11 @@ void Application::run(){
 	sf::Time accumulator = sf::Time::Zero;
 	const sf::Time TimePerUpdate = sf::seconds(1.f / 240.0f);
 	const sf::Time MaxAccumulatedTime = sf::seconds(1.f);
-	while (Context::instance().isValid()){
+	while (window_.isOpen() && !states_.empty()){
 		processEvents();
 		accumulator += clock.restart();
 		accumulator = std::min(std::max(accumulator,sf::Time::Zero), MaxAccumulatedTime);
-		while (accumulator > TimePerUpdate && Context::instance().isValid()){
+		while (accumulator > TimePerUpdate && window_.isOpen() && !states_.empty()){
 			accumulator -= TimePerUpdate;
 			processEvents();
 			update(TimePerUpdate);

@@ -1,7 +1,17 @@
+/*
+	TODO:
+
+	this class should probably have methods like:
+	processKeyPressed()
+	processResized()
+	because code will be clearer
+
+	Entity-like classes might need these methods aswell
+*/
+
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Context.h"
 #include "VisitableShapes.h"
 
 class World: public sf::Drawable{
@@ -9,8 +19,11 @@ public:
 	World();
 	~World();
 
+	void setCamera(const sf::View& camera);
+	const sf::View& getCamera() const;
 	void resizeCamera(unsigned int width, unsigned int height);
 	void resetCamera();
+	//sf::Vector2f getWorldMousePos(const sf::RenderWindow& window) const;
 	void update(const sf::Time& dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 private:

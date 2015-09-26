@@ -5,7 +5,7 @@ World::World()
 	shape_(100,3),
 	vshape_(sf::Vector2f(100.f, 50.f)),
 	//rshape_(sf::Vector2f(100.f, 50.f)),
-	camera_(Context::instance().window_.getView()),
+	camera_(),
 	cameraSpeed_(300.f,300.f),
 	currentZoom_(1.f),
 	zoomSpeed_(0.99f),
@@ -32,10 +32,28 @@ void World::resizeCamera(unsigned int width, unsigned int height){
 	camera_.setSize(width*currentZoom_, height*currentZoom_);
 }
 
+void World::setCamera(const sf::View& camera){
+	camera_ = camera;
+}
+
+const sf::View& World::getCamera() const{
+	return camera_;
+}
+
 void World::resetCamera(){
-	camera_ = Context::instance().window_.getView();
+	//camera_ = Context::instance().window_.getView();
+	sf::Vector2f newSize = camera_.getSize() / currentZoom_;
+	camera_.setSize(newSize);
+	camera_.setCenter(newSize / 2.f);
 	currentZoom_ = 1.f;
 }
+//
+//sf::Vector2f World::getWorldMousePos(const sf::RenderWindow& window) const{
+//	sf::View currentView = window.getView();
+//	window.setView(camera_);
+//	sf::Vector2f worldMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+//	Context::instance().window_.setView(currentView);
+//}
 
 void World::update(const sf::Time& dt){
 	//updating camera
@@ -76,18 +94,18 @@ void World::update(const sf::Time& dt){
 	}
 
 	//adding debug info
-	sf::View currentView = Context::instance().window_.getView();
-	Context::instance().window_.setView(camera_);
-	sf::Vector2f worldMousePos = Context::instance().window_.mapPixelToCoords(Context::instance().getMousePos());
-	Context::instance() << "Camera position: " << camera_.getCenter().x << " " << camera_.getCenter().y << "\n"
-		<< "Camera zoom: " << currentZoom_ << "\n"
-		<< "Mouse position in world: " << worldMousePos.x << " " << worldMousePos.y << "\n";
-	Context::instance().window_.setView(currentView);
+	//sf::View currentView = Context::instance().window_.getView();
+	//Context::instance().window_.setView(camera_);
+	//sf::Vector2f worldMousePos = Context::instance().window_.mapPixelToCoords(Context::instance().getMousePos());
+	//Context::instance() << "Camera position: " << camera_.getCenter().x << " " << camera_.getCenter().y << "\n"
+	//	<< "Camera zoom: " << currentZoom_ << "\n"
+	//	<< "Mouse position in world: " << worldMousePos.x << " " << worldMousePos.y << "\n";
+	//Context::instance().window_.setView(currentView);
 }
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-	sf::View previousView = Context::instance().window_.getView();
-	Context::instance().window_.setView(camera_);
+	sf::View previousView = target.getView();
+	target.setView(camera_);
 
 	//drawing bounds of the world
 	sf::RectangleShape bounds(bounds_);
@@ -101,6 +119,6 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	target.draw(vshape_);
 	//target.draw(rshape_);
 
-	Context::instance().window_.setView(previousView);
+	target.setView(previousView);
 }
 

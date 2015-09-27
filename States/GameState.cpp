@@ -6,14 +6,19 @@
 GameState::GameState(Application& app)
 	:State(app),
 	world_(),
-	action_(nullptr){
+	shape_(sf::Vector2f(100.f, 150.f)),
+	action1_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f)),
+	action2_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f)),
+	enterTitleStateAction_(action2_){
 	loadResources();
 	world_.setCamera(camera_);
+	shape_.setFillColor(sf::Color::Yellow);
+	shape_.setPosition(450.f, 300.f);
 }
 
 GameState::~GameState(){
-	if (action_)
-		delete action_;
+	delete action1_;
+	delete action2_;
 }
 
 void GameState::loadTextures(){
@@ -25,18 +30,30 @@ void GameState::loadFonts(){
 void GameState::loadSound(){
 }
 
+void GameState::onActionFinish(){
+	//delete action_;
+
+	//temporary
+	action_->reset();
+
+	if (action_ == enterTitleStateAction_){
+		app_.changeState(new TitleState(app_));
+	}
+	else{
+		action_ = nullptr;
+	}
+}
+
 void GameState::processKeyPressed(sf::Keyboard::Key key){
 	switch (key){
 	case sf::Keyboard::R:
 		world_.resetCamera();
 		break;
-	case sf::Keyboard::Return:
-		app_.changeState(new TitleState(app_));
-		//Context::instance().changeState(new TitleState(),Action::MoveBy(100.f,200.f,1.f));
+	case sf::Keyboard::Num1:
+		setAction(action1_);
 		break;
-	case sf::Keyboard::A:
-		if (!action_)
-			action_ = new Actions::MoveBy(camera_,-100.f,-100.f,2.f);
+	case sf::Keyboard::Num2:
+		setAction(action2_);
 		break;
 	}
 }
@@ -51,18 +68,6 @@ void GameState::processResized(const sf::Event::SizeEvent& size){
 }
 
 void GameState::update(const sf::Time& dt){
-	//update action if there is any
-	if (action_){
-		action_->update(dt);
-		if (action_->done()){
-			delete action_;
-			action_ = nullptr;
-		}
-	}
-	//else update state normally
-	else{
-		world_.update(dt);
-	}
 	//update world mouse pos
 	//
 	//get window mouse pos
@@ -76,6 +81,15 @@ void GameState::update(const sf::Time& dt){
 	app_ << "World mouse position: " << worldMousePos.x << " " << worldMousePos.y << std::endl;
 	//restore current view
 	app_.getWindow().setView(currentView);
+	//update world's zoom
+	app_ << "Current zoom: " << world_.getZoom() << std::endl;
+
+	if (action_)
+		action_->update(dt);
+	else{
+		//update world
+		world_.update(dt);
+	}
 }
 
 void GameState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -84,4 +98,5 @@ void GameState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
 	//draw
 	target.draw(world_);
+	target.draw(shape_);
 }

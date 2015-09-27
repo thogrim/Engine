@@ -1,23 +1,24 @@
 #include "MoveBy.h"
 
-using namespace Actions;
+using namespace Action;
 
-MoveBy::MoveBy(sf::View& camera, float dx, float dy, float time)
-	:Action(),
-	camera_(camera),
-	velocity_(dx/time,dy/time),
-	timeLeft_(sf::seconds(time)){
+MoveBy::MoveBy(ActionObserver& obs, const sf::Time& duration, sf::Transformable& object, float dx, float dy)
+	:SimpleAction(obs,duration),
+	object_(object),
+	velocity_(dx/duration.asSeconds(),dy/duration.asSeconds()){
 }
 
 MoveBy::~MoveBy(){
 }
 
 void MoveBy::update(const sf::Time& dt){
-	if (!done_){
-		camera_.move(velocity_*dt.asSeconds());
-		timeLeft_ -= dt;
-		if (timeLeft_ < sf::Time::Zero)
-			done_ = true;
-	}
+	object_.move(velocity_*dt.asSeconds());
+
+	timeLeft_ -= dt;
+	if (timeLeft_ < sf::Time::Zero)
+		notifyCompletion();
 }
 
+SimpleAction* MoveBy::clone() const{
+	return new MoveBy(*this);
+}

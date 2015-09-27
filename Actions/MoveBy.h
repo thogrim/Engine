@@ -1,18 +1,17 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/View.hpp>
-#include "Action.h"
+#include <SFML/Graphics/Transformable.hpp>
+#include "SimpleAction.h"
 
-namespace Actions{
-	class MoveBy: public Action{
+namespace Action{
+	class MoveBy: public SimpleAction{
 	public:
-		MoveBy(sf::View& camera, float dx, float dy, float time);
+		MoveBy(ActionObserver& obs, const sf::Time& duration, sf::Transformable& object, float dx, float dy);
 		~MoveBy();
 		void update(const sf::Time& dt);
+		SimpleAction* clone() const;
 	private:
-		sf::View& camera_;
+		sf::Transformable& object_;
 		sf::Vector2f velocity_;
-		sf::Time timeLeft_;
 	};
 }

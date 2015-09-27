@@ -1,15 +1,24 @@
 #include "TitleState.h"
 #include "GameState.h"
 #include "../Application.h"
+#include "../Actions/MoveBy.h"
 
 TitleState::TitleState(Application& app)
 	:State(app),
-	world_(){
+	world_(),
+	shape_(sf::Vector2f(100.f,100.f)),
+	action1_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f)),
+	action2_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f)),
+	enterGameStateAction_(action2_){
 	loadResources();
 	world_.setCamera(camera_);
+	shape_.setFillColor(sf::Color::Yellow);
+	shape_.setPosition(450.f, 250.f);
 }
 
 TitleState::~TitleState(){
+	delete action1_;
+	delete action2_;
 }
 
 void TitleState::loadTextures(){
@@ -21,13 +30,32 @@ void TitleState::loadFonts(){
 void TitleState::loadSound(){
 }
 
+void TitleState::onActionFinish(){
+	//delete action_;
+	//temporary
+	action_->reset();
+
+	if (action_ == enterGameStateAction_){
+		app_.changeState(new GameState(app_));
+	}
+	else{
+		action_ = nullptr;
+	}
+}
+
 void TitleState::processKeyPressed(sf::Keyboard::Key key){
 	switch (key){
 	case sf::Keyboard::R:
 		world_.resetCamera();
 		break;
-	case sf::Keyboard::Return:
-		app_.changeState(new GameState(app_));
+	//case sf::Keyboard::Return:
+	//	app_.changeState(new GameState(app_));
+	//	break;
+	case sf::Keyboard::Num1:
+		setAction(action1_);
+		break;
+	case sf::Keyboard::Num2:
+		setAction(action2_);
 		break;
 	}
 }
@@ -44,9 +72,6 @@ void TitleState::processResized(const sf::Event::SizeEvent& size){
 }
 
 void TitleState::update(const sf::Time& dt){
-	//update world
-	world_.update(dt);
-
 	//update world mouse pos
 	//
 	//get window mouse pos
@@ -60,6 +85,15 @@ void TitleState::update(const sf::Time& dt){
 	app_ << "World mouse position: " << worldMousePos.x << " " << worldMousePos.y << std::endl;
 	//restore current view
 	app_.getWindow().setView(currentView);
+	//update world's zoom
+	app_ << "Current zoom: " << world_.getZoom() << std::endl;
+
+	if (action_)
+		action_->update(dt);
+	else{
+		//update world
+		world_.update(dt);
+	}
 }
 
 void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -68,4 +102,5 @@ void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
 	//draw
 	target.draw(world_);
+	target.draw(shape_);
 }

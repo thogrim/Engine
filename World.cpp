@@ -47,6 +47,10 @@ void World::resetCamera(){
 	camera_.setCenter(newSize / 2.f);
 	currentZoom_ = 1.f;
 }
+
+float World::getZoom() const{
+	return currentZoom_;
+}
 //
 //sf::Vector2f World::getWorldMousePos(const sf::RenderWindow& window) const{
 //	sf::View currentView = window.getView();

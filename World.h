@@ -23,7 +23,7 @@ public:
 	const sf::View& getCamera() const;
 	void resizeCamera(unsigned int width, unsigned int height);
 	void resetCamera();
-	//sf::Vector2f getWorldMousePos(const sf::RenderWindow& window) const;
+	float getZoom() const;
 	void update(const sf::Time& dt);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 private:

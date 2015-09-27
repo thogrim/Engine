@@ -2,10 +2,10 @@
 
 #include "State.h"
 #include "../World.h"
-
-namespace Actions{
-	class Action;
-}
+//
+//namespace Actions{
+//	class Action;
+//}
 
 class GameState: public State{
 public:
@@ -18,6 +18,7 @@ private:
 	void loadSound();
 
 public:
+	void onActionFinish();
 	void processKeyPressed(sf::Keyboard::Key key);
 	void processResized(const sf::Event::SizeEvent& size);
 	void update(const sf::Time& dt);
@@ -27,6 +28,13 @@ public:
 private:
 	//ResourceHolders
 	World world_;
-	Actions::Action* action_;
+	sf::RectangleShape shape_;
+
+	//actions just for testing
+	Action::SimpleAction* action1_;
+	Action::SimpleAction* action2_;
+
+	//actions that cause state changing
+	const Action::SimpleAction* enterTitleStateAction_;
 };
 

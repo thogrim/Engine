@@ -7,39 +7,47 @@ GameState::GameState(Application& app)
 	:State(app),
 	world_(),
 	shape_(sf::Vector2f(100.f, 150.f)),
-	action1_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f)),
-	action2_(new Action::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f)),
-	enterTitleStateAction_(action2_){
-	loadResources();
+	ac_(),
+	ac2_(),
+	toTitleState_(){
+	//loadResources();
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
+	ac_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f));
+	toTitleState_.set(ac_.getAction());
+	ac2_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f));
 }
 
 GameState::~GameState(){
-	delete action1_;
-	delete action2_;
 }
 
-void GameState::loadTextures(){
-}
+//void GameState::loadTextures(){
+//}
+//
+//void GameState::loadFonts(){
+//}
+//
+//void GameState::loadSound(){
+//}
 
-void GameState::loadFonts(){
-}
-
-void GameState::loadSound(){
+Action* GameState::checkEnterStateActions(Action* action){
+	if (action == toTitleState_.get()){
+		//toGameState_.wasPerformed_ = true;
+		return action;
+	}
+	//other checkings similar
+	else{
+		return action->clone();
+	}
 }
 
 void GameState::onActionFinish(){
-	//delete action_;
-
-	//temporary
-	action_->reset();
-
-	if (action_ == enterTitleStateAction_){
+	if (action_ == toTitleState_.get()){
 		app_.changeState(new TitleState(app_));
 	}
 	else{
+		delete action_;
 		action_ = nullptr;
 	}
 }
@@ -50,10 +58,10 @@ void GameState::processKeyPressed(sf::Keyboard::Key key){
 		world_.resetCamera();
 		break;
 	case sf::Keyboard::Num1:
-		setAction(action1_);
+		setAction(ac_.getAction());
 		break;
 	case sf::Keyboard::Num2:
-		setAction(action2_);
+		setAction(ac2_.getAction());
 		break;
 	}
 }

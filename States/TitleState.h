@@ -2,16 +2,17 @@
 
 #include "State.h"
 #include "../World.h"
+#include "../ActionContainer.h"
 
 class TitleState: public State{
 public:
 	TitleState(Application& app);
 	~TitleState();
 
-private:
-	void loadTextures();
-	void loadFonts();
-	void loadSound();
+//private:
+//	void loadTextures();
+//	void loadFonts();
+//	void loadSound();
 
 public:
 	void onActionFinish();
@@ -22,15 +23,18 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
+	Action* checkEnterStateActions(Action* action);
 	//ResourceHolders
 	World world_;
 	sf::RectangleShape shape_;
 
 	//actions just for testing
-	Action::SimpleAction* action1_;
-	Action::SimpleAction* action2_;
+	//Action* action1_;
+	//Action* action2_;
+	ActionContainer ac_;
+	ActionContainer ac2_;
 
 	//actions that cause state changing
-	const Action::SimpleAction* enterGameStateAction_;
+	EnterStateAction toGameState_;
 };
 

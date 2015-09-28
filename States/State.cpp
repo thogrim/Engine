@@ -1,6 +1,6 @@
 #include "State.h"
 #include "../Application.h"
-#include "../Actions/SimpleAction.h"
+#include "../Actions/Action.h"
 
 State::State(Application& app)
 	:app_(app),
@@ -11,19 +11,22 @@ State::State(Application& app)
 State::~State(){
 }
 
-void State::loadResources(){
-	try{
-		loadTextures();
-		loadFonts();
-		loadSound();
-	}
-	catch (std::runtime_error& e){
-		std::cout << e.what() << std::endl;
-	}
+//void State::loadResources(){
+//	try{
+//		loadTextures();
+//		loadFonts();
+//		loadSound();
+//	}
+//	catch (std::runtime_error& e){
+//		std::cout << e.what() << std::endl;
+//	}
+//}
+
+//method not needed; 
+void State::setAction(Action* action){
+	action_ = checkEnterStateActions(action);
 }
 
-void State::setAction(Action::SimpleAction* action){
-	action_ = action;
-	//if (!action_)
-	//	action_ = action->clone();
-}
+//void State::changeState(State* state){
+//	delete action
+//}

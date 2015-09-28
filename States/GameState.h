@@ -7,32 +7,21 @@
 class GameState: public State{
 public:
 	GameState(Application& app);
+	GameState(const State& state);
 	~GameState();
 
-//private:
-//	void loadTextures();
-//	void loadFonts();
-//	void loadSound();
-
 public:
-	void onActionFinish();
-	void processKeyPressed(sf::Keyboard::Key key);
-	void processResized(const sf::Event::SizeEvent& size);
-	void update(const sf::Time& dt);
-	//void render() const;
+	void withActionUpdate(const sf::Time& dt);
+	void noActionUpdate(const sf::Time& dt);
+	void onKeyPressed(sf::Keyboard::Key key);
+	void onResized(const sf::Event::SizeEvent& size);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
-	Action* checkEnterStateActions(Action* action);
-	//ResourceHolders
 	World world_;
 	sf::RectangleShape shape_;
-
-
 	ActionContainer ac_;
 	ActionContainer ac2_;
-
-	//actions that cause state changing
-	EnterStateAction toTitleState_;
+	ActionContainer ac3_;
 };
 

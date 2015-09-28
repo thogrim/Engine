@@ -6,8 +6,8 @@ ActionContainer::ActionContainer()
 }
 
 ActionContainer::~ActionContainer(){
-	if (action_)
-		delete action_;
+	assert(action_);
+	delete action_;
 }
 
 void ActionContainer::storeAction(Action* action){
@@ -15,5 +15,6 @@ void ActionContainer::storeAction(Action* action){
 }
 
 Action* ActionContainer::getAction() const{
+	assert(action_);
 	return action_;
 }

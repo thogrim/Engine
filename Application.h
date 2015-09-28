@@ -17,9 +17,8 @@ public:
 	void run();
 
 	sf::RenderWindow& getWindow();
-	//sf::View getWindowView() const;
 	void changeState(State* state);
-
+	std::ostringstream& getConsole();
 	std::ostringstream& operator<<(const std::string& info);
 private:
 	void processEvents();
@@ -28,7 +27,7 @@ private:
 
 	sf::RenderWindow window_;
 	bool hasFocus_;
-	std::vector<std::unique_ptr<State>> states_;
+	std::unique_ptr<State> state_;
 
 	struct Console{
 		Console();

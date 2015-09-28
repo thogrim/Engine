@@ -45,9 +45,9 @@ void Application::Console::update(const sf::Time& dt){
 Application::Application(unsigned int width, unsigned int height, const std::string& title, unsigned int fps)
 	:window_(sf::VideoMode(width, height, 32), title),
 	hasFocus_(true),
-	states_(),
+	state_(),
 	console_(){
-	window_.setFramerateLimit(fps);
+	window_.setFramerateLimit(fps); 
 	try{
 		ResourcesIDs::readIDs();
 	}
@@ -55,7 +55,7 @@ Application::Application(unsigned int width, unsigned int height, const std::str
 		std::cout << e.what() << std::endl;
 	}
 	std::unique_ptr<State> beginState(new TitleState(*this));
-	states_.push_back(std::move(beginState));
+	state_ = std::move(beginState);
 }
 
 Application::Application()
@@ -70,9 +70,11 @@ sf::RenderWindow& Application::getWindow(){
 }
 
 void Application::changeState(State* state){
-	states_.pop_back();
-	std::unique_ptr<State> newState(state);
-	states_.push_back(std::move(newState));
+	state_.reset(state);
+}
+
+std::ostringstream& Application::getConsole(){
+	return console_.stream_;
 }
 
 std::ostringstream& Application::operator<<(const std::string& info){
@@ -95,11 +97,11 @@ void Application::processEvents(){
 			else if (ev.key.code == sf::Keyboard::Tab)//turn on/off concole
 				console_.up_ = !console_.up_;
 			else
-				states_.back()->processKeyPressed(ev.key.code);
+				state_->onKeyPressed(ev.key.code);
 			break;
 
 		case sf::Event::Resized:
-			states_.back()->processResized(ev.size);
+			state_->onResized(ev.size);
 			break;
 
 		case sf::Event::LostFocus:
@@ -116,8 +118,7 @@ void Application::processEvents(){
 void Application::update(const sf::Time& dt){
 	if (hasFocus_){
 		console_.update(dt);
-		console_.stream_ << "State stack size: " << states_.size() << std::endl;
-		states_.back()->update(dt);
+		state_->update(dt);
 	}
 }
 
@@ -125,7 +126,7 @@ void Application::render(){
 	if (hasFocus_){
 		++console_.frameCounter_;
 		window_.clear(sf::Color::Black);
-		window_.draw(*states_.back());
+		window_.draw(*state_);
 		if (console_.up_){
 			console_.text_.setString(console_.stream_.str());
 			window_.draw(console_.text_);
@@ -139,11 +140,11 @@ void Application::run(){
 	sf::Time accumulator = sf::Time::Zero;
 	const sf::Time TimePerUpdate = sf::seconds(1.f / 240.0f);
 	const sf::Time MaxAccumulatedTime = sf::seconds(1.f);
-	while (window_.isOpen() && !states_.empty()){
+	while (window_.isOpen() && state_){
 		processEvents();
 		accumulator += clock.restart();
 		accumulator = std::min(std::max(accumulator,sf::Time::Zero), MaxAccumulatedTime);
-		while (accumulator > TimePerUpdate && window_.isOpen() && !states_.empty()){
+		while (accumulator > TimePerUpdate && window_.isOpen() && state_){
 			accumulator -= TimePerUpdate;
 			processEvents();
 			update(TimePerUpdate);

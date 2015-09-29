@@ -24,29 +24,29 @@ State::~State(){
 //}
 
 void State::addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction){
-	//stateChangeCallbacks_.push_back(std::make_pair(ac.getAction(), changeFunction));
 	stateChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);
 }
 
-void State::setAction(Action* action){
+void State::setAction(ActionContainer& ac){
 	//dont set new action when there is still
 	//action to perform
 	if (action_)
 		return;
 
+	action_ = ac.getAction();
 	//check if action changes state
-	auto it = std::find_if(stateChangeCallbacks_.begin(), stateChangeCallbacks_.end(),
-		[action](const StateChangeCallback& callback){
-		return  callback.first == action;
-	});
+	//auto it = std::find_if(stateChangeCallbacks_.begin(), stateChangeCallbacks_.end(),
+	//	[action](const StateChangeCallback& callback){
+	//	return  callback.first == action;
+	//});
 
-	//if it does, let it perform
-	if (it != stateChangeCallbacks_.end())
-		action_ = action;
+	////if it does, let it perform
+	//if (it != stateChangeCallbacks_.end())
+	//	action_ = action;
 
-	//else copy action, and perform its copy
-	else
-		action_ = action->clone();
+	////else copy action, and perform its copy
+	//else
+	//	action_ = action->clone();
 }
 
 void State::onActionFinish(){
@@ -61,10 +61,8 @@ void State::onActionFinish(){
 		app_.changeState(it->second());
 
 	//else remove action
-	else{
-		delete action_;
+	else
 		action_ = nullptr;
-	}
 }
 
 void State::update(const sf::Time& dt){
@@ -73,6 +71,9 @@ void State::update(const sf::Time& dt){
 		action_->update(dt);
 	else
 		noActionUpdate(dt);
+
+	if (action_)
+		app_ << "Performing action\n";
 }
 
 std::ostringstream& State::getAppConsole(){

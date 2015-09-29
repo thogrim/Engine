@@ -20,7 +20,7 @@ protected:
 	//registers action, that causes state change
 	void addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction);
 	//sets state's action
-	void setAction(Action* action);
+	void setAction(ActionContainer& ac);
 
 public:
 	void onActionFinish() override;
@@ -56,7 +56,7 @@ private:
 	Application& app_;
 	//current action to perform
 	Action* action_;
-	//container holding all actions that cause state to change
+	//container holding pointers to actions that cause state to change
 	typedef std::pair < Action*, std::function<State*()>> StateChangeCallback;
 	std::vector<StateChangeCallback> stateChangeCallbacks_;
 protected:

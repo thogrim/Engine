@@ -4,13 +4,13 @@
 #include "SimpleAction.h"
 
 namespace Actions{
-	class MoveBy: public SimpleAction{
+	class Rotate : public SimpleAction{
 	public:
-		MoveBy(ActionObserver* obs, const sf::Time& duration, sf::Transformable& object, float dx, float dy);
-		~MoveBy();
+		Rotate(ActionObserver* obs, const sf::Time& duration, sf::Transformable& object, float angle);
+		~Rotate();
 	private:
 		void updateAction(const sf::Time& dt);
 		sf::Transformable& object_;
-		sf::Vector2f velocity_;
+		float velocity_;
 	};
 }

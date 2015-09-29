@@ -1,6 +1,8 @@
 #include "TitleState.h"
 #include "GameState.h"
 #include "../Actions/MoveBy.h"
+#include "../Actions/Rotate.h"
+#include "../Actions/CompositeAction.h"
 
 TitleState::TitleState(Application& app)
 	:State(app),
@@ -11,12 +13,27 @@ TitleState::TitleState(Application& app)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 250.f);
-	ac_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f));
-	auto call1 = [this](){
-		return new GameState(*this);
-	};
-	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f));
+	shape_.setOrigin(50.f, 50.f);
+
+	//move shape and go to Game State
+	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(1.f), shape_, 100.f, 0.f));
+	//auto call1 = [this](){
+	//	return new GameState(*this);
+	//};
+	//addStateChangeCallback(ac_, call1);
+
+	//move shape
+	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(1.f), shape_, -300.f, 0.f));
+
+	//move shape and rotate
+	Actions::CompositeAction* comp = new Actions::CompositeAction(this);
+	Action* a1 = new Actions::MoveBy(comp, sf::seconds(2.f), shape_, 300.f, 0.f);
+	Action* a2 = new Actions::Rotate(comp, sf::seconds(1.f), shape_, 90.f);
+	Action* a3 = new Actions::MoveBy(comp, sf::seconds(1.5), shape_, 0.f, 30.f);
+	comp->addAction(a1);
+	comp->addAction(a2);
+	comp->addAction(a3);
+	ac3_.storeAction(comp);
 }
 
 TitleState::TitleState(const State& state)
@@ -28,12 +45,26 @@ TitleState::TitleState(const State& state)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 250.f);
-	ac_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f));
-	auto call1 = [this](){
-		return new GameState(*this);
-	};
-	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f));
+	shape_.setOrigin(50.f, 50.f);
+	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, 300.f, 0.f));
+	//auto call1 = [this](){
+	//	return new GameState(*this);
+	//};
+	//addStateChangeCallback(ac_, call1);
+	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, -300.f, 0.f));
+
+	//move shape
+	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(1.f), shape_, -300.f, 0.f));
+
+	//move shape and rotate
+	Actions::CompositeAction* comp = new Actions::CompositeAction(this);
+	Action* a1 = new Actions::MoveBy(comp, sf::seconds(2.f), shape_, 300.f, 0.f);
+	Action* a2 = new Actions::Rotate(comp, sf::seconds(1.f), shape_, 90.f);
+	Action* a3 = new Actions::MoveBy(comp, sf::seconds(1.5), shape_, 0.f, 30.f);
+	comp->addAction(a1);
+	comp->addAction(a2);
+	comp->addAction(a3);
+	ac3_.storeAction(comp);
 }
 
 TitleState::~TitleState(){
@@ -45,10 +76,13 @@ void TitleState::onKeyPressed(sf::Keyboard::Key key){
 		world_.resetCamera();
 		break;
 	case sf::Keyboard::Num1:
-		setAction(ac_.getAction());
+		setAction(ac_);
 		break;
 	case sf::Keyboard::Num2:
-		setAction(ac2_.getAction());
+		setAction(ac2_);
+		break;
+	case sf::Keyboard::Num3:
+		setAction(ac3_);
 		break;
 	}
 }

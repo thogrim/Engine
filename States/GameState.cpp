@@ -13,13 +13,13 @@ GameState::GameState(Application& app)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
-	ac_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f));
+	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, 300.f, 0.f));
 	auto call1 = [this](){
 		return new TitleState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f));
-	ac3_.storeAction(new Actions::Rotate(*this, sf::seconds(1.f), shape_, 45.f));
+	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, -300.f, 0.f));
+	ac3_.storeAction(new Actions::Rotate(this, sf::seconds(1.f), shape_, 45.f));
 }
 
 GameState::GameState(const State& state)
@@ -31,13 +31,13 @@ GameState::GameState(const State& state)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
-	ac_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, 300.f, 0.f));
+	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, 300.f, 0.f));
 	auto call1 = [this](){
 		return new TitleState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(*this, sf::seconds(2.f), shape_, -300.f, 0.f));
-	ac3_.storeAction(new Actions::Rotate(*this, sf::seconds(1.f), shape_, 45.f));
+	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, -300.f, 0.f));
+	ac3_.storeAction(new Actions::Rotate(this, sf::seconds(1.f), shape_, 45.f));
 }
 
 GameState::~GameState(){
@@ -49,13 +49,13 @@ void GameState::onKeyPressed(sf::Keyboard::Key key){
 		world_.resetCamera();
 		break;
 	case sf::Keyboard::Num1:
-		setAction(ac_.getAction());
+		setAction(ac_);
 		break;
 	case sf::Keyboard::Num2:
-		setAction(ac2_.getAction());
+		setAction(ac2_);
 		break;
 	case sf::Keyboard::Num3:
-		setAction(ac3_.getAction());
+		setAction(ac3_);
 		break;
 	}
 }

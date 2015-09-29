@@ -22,5 +22,6 @@ private:
 	sf::RectangleShape shape_;
 	ActionContainer ac_;
 	ActionContainer ac2_;
+	ActionContainer ac3_;
 };
 

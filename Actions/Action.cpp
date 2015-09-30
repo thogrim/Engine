@@ -1,6 +1,6 @@
 #include "Action.h"
 
-Action::Action(/*ActionObserver* obs*/)
+Action::Action()
 	:observer_(nullptr){
 }
 

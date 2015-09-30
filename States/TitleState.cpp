@@ -11,38 +11,7 @@ TitleState::TitleState(Application& app)
 	shape_(sf::Vector2f(100.f,100.f)),
 	ac_(),
 	ac2_(){
-	world_.setCamera(camera_);
-	shape_.setFillColor(sf::Color::Yellow);
-	shape_.setPosition(450.f, 250.f);
-	shape_.setOrigin(50.f, 50.f);
-
-	//move shape 
-	storeAction(ac_, new Actions::MoveBy(sf::seconds(1.f), shape_, 100.f, 0.f));
-	//and go to Game State
-	//auto call1 = [this](){
-	//	return new GameState(*this);
-	//};
-	//addStateChangeCallback(ac_, call1);
-
-	//move shape
-	storeAction(ac2_,new Actions::MoveBy(sf::seconds(1.f), shape_, -300.f, 0.f));
-
-	//move shape in square
-	Actions::ActionQueue* queue = new Actions::ActionQueue();
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 200.f, 0.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0, 200.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, -200.f, 0.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0.f, -220.f));
-	storeAction(ac3_,queue);
-
-	// COMPOSITE ACTION TEST:
-	//Actions::CompositeAction* comp = new Actions::CompositeAction(this);
-	//Action* a1 = new Actions::MoveBy(comp, sf::seconds(2.f), shape_, 300.f, 0.f);
-	//Action* a2 = new Actions::Rotate(comp, sf::seconds(1.f), shape_, 90.f);
-	//Action* a3 = new Actions::MoveBy(comp, sf::seconds(1.5), shape_, 0.f, 30.f);
-	//comp->addAction(a1);
-	//comp->addAction(a2);
-	//comp->addAction(a3);
+	init();
 }
 
 TitleState::TitleState(const State& state)
@@ -51,37 +20,46 @@ TitleState::TitleState(const State& state)
 	shape_(sf::Vector2f(100.f, 100.f)),
 	ac_(),
 	ac2_(){
+	init();
+}
+
+TitleState::~TitleState(){
+}
+
+void TitleState::init(){
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 250.f);
 	shape_.setOrigin(50.f, 50.f);
 
+	//move shape 
 	storeAction(ac_, new Actions::MoveBy(sf::seconds(1.f), shape_, 100.f, 0.f));
-	//auto call1 = [this](){
-	//	return new GameState(*this);
-	//};
-	//addStateChangeCallback(ac_, call1);
-	storeAction(ac2_, new Actions::MoveBy(sf::seconds(1.f), shape_, -300.f, 0.f));
+	//and go to Game State
+	auto call1 = [this](){
+		return new GameState(*this);
+	};
+	addStateChangeCallback(ac_, call1);
 
-	//move shape in square
+	//move shape
+	storeAction(ac2_, new Actions::Rotate(sf::seconds(1.f), shape_, 90.f));
+	//State*(*f)(State&) = [](State& state){
+	//	return new GameState(state);
+	//}(*this);
+
+	//move shape in square and go to GameState
 	Actions::ActionQueue* queue = new Actions::ActionQueue();
 	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 200.f, 0.f));
 	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0, 200.f));
 	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, -200.f, 0.f));
 	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0.f, -220.f));
 	storeAction(ac3_, queue);
+	auto call3 = [this](){
+		return new GameState(*this);
+	};
+	addStateChangeCallback(ac3_, call3);
 
-	// COMPOSITE ACTION TEST:
-	//Actions::CompositeAction* comp = new Actions::CompositeAction(this);
-	//Action* a1 = new Actions::MoveBy(comp, sf::seconds(2.f), shape_, 300.f, 0.f);
-	//Action* a2 = new Actions::Rotate(comp, sf::seconds(1.f), shape_, 90.f);
-	//Action* a3 = new Actions::MoveBy(comp, sf::seconds(1.5), shape_, 0.f, 30.f);
-	//comp->addAction(a1);
-	//comp->addAction(a2);
-	//comp->addAction(a3);
-}
-
-TitleState::~TitleState(){
+	//starting action
+	//setAction(ac3_);
 }
 
 void TitleState::onKeyPressed(sf::Keyboard::Key key){

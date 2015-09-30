@@ -123,7 +123,7 @@ void Application::update(const sf::Time& dt){
 }
 
 void Application::render(){
-	if (hasFocus_){
+	//if (hasFocus_){
 		++console_.frameCounter_;
 		window_.clear(sf::Color::Black);
 		window_.draw(*state_);
@@ -132,7 +132,7 @@ void Application::render(){
 			window_.draw(console_.text_);
 		}
 		window_.display();
-	}
+	//}
 }
 
 void Application::run(){

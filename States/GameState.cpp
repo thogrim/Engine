@@ -10,19 +10,7 @@ GameState::GameState(Application& app)
 	ac_(),
 	ac2_(),
 	ac3_(){
-	world_.setCamera(camera_);
-	shape_.setFillColor(sf::Color::Yellow);
-	shape_.setPosition(450.f, 300.f);
-
-	storeAction(ac_,new Actions::MoveBy(sf::seconds(2.f), shape_, 300.f, 0.f));
-	auto call1 = [this](){
-		return new TitleState(*this);
-	};
-	addStateChangeCallback(ac_, call1);
-
-	storeAction(ac2_,new Actions::MoveBy(sf::seconds(2.f), shape_, -300.f, 0.f));
-
-	storeAction(ac3_,new Actions::Rotate(sf::seconds(1.f), shape_, 45.f));
+	init();
 }
 
 GameState::GameState(const State& state)
@@ -31,6 +19,13 @@ GameState::GameState(const State& state)
 	shape_(sf::Vector2f(100.f, 150.f)),
 	ac_(),
 	ac2_(){
+	init();
+}
+
+GameState::~GameState(){
+}
+
+void GameState::init(){
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
@@ -44,9 +39,8 @@ GameState::GameState(const State& state)
 	storeAction(ac2_, new Actions::MoveBy(sf::seconds(2.f), shape_, -300.f, 0.f));
 
 	storeAction(ac3_, new Actions::Rotate(sf::seconds(1.f), shape_, 45.f));
-}
 
-GameState::~GameState(){
+	setAction(ac3_);
 }
 
 void GameState::onKeyPressed(sf::Keyboard::Key key){

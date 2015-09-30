@@ -5,7 +5,7 @@
 namespace Actions{
 	class SimpleAction : public Action{
 	public:
-		SimpleAction(/*ActionObserver* obs = nullptr,*/ const sf::Time& duration);
+		SimpleAction(const sf::Time& duration);
 		virtual ~SimpleAction();
 		void update(const sf::Time& dt);
 	protected:

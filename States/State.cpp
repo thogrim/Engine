@@ -7,6 +7,7 @@ State::State(Application& app)
 	action_(nullptr),
 	stateChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
+	//init();
 }
 
 State::State(const State& state)
@@ -14,6 +15,7 @@ State::State(const State& state)
 	action_(nullptr),
 	stateChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
+	//init();
 }
 
 State::~State(){
@@ -28,7 +30,7 @@ void State::addStateChangeCallback(const ActionContainer& ac, std::function<Stat
 	stateChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);
 }
 
-void State::setAction(ActionContainer& ac){
+void State::setAction(const ActionContainer& ac){
 	//dont set new action when there is still
 	//action to perform
 	if (action_)
@@ -58,8 +60,10 @@ void State::onActionFinish(){
 	});
 
 	//if it does, change state
-	if (it != stateChangeCallbacks_.end())
+	if (it != stateChangeCallbacks_.end()){
+		action_ = nullptr;
 		app_.changeState(it->second());
+	}
 
 	//else remove action
 	else
@@ -68,13 +72,14 @@ void State::onActionFinish(){
 
 void State::update(const sf::Time& dt){
 	withActionUpdate(dt);
-	if (action_)
+	if (action_){
+		app_ << "Performing action\n";
 		action_->update(dt);
+	}
 	else
 		noActionUpdate(dt);
 
-	if (action_)
-		app_ << "Performing action\n";
+	//if (action_)
 }
 
 std::ostringstream& State::getAppConsole(){

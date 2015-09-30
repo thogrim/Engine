@@ -11,7 +11,7 @@ class ActionObserver;
 
 class Action{
 public:
-	Action(/*ActionObserver* obs = nullptr*/);
+	Action();
 	virtual ~Action();
 	virtual void update(const sf::Time& dt)=0;
 	void setObserver(ActionObserver* obs);

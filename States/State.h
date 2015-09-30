@@ -7,7 +7,6 @@
 #include "../ActionObserver.h"
 #include "../ActionContainer.h"
 
-//class Application;
 class Action;
 
 class State: public sf::Drawable, public ActionObserver{
@@ -17,13 +16,18 @@ public:
 	virtual ~State();
 
 protected:
+	//method called at the end of constructor
+	//to avoid duplicate code in:
+	//MyState(Application& app)
+	//MyState(const State& state)
+	virtual void init()=0;
 	//stores action a in container ac
 	void storeAction(ActionContainer& ac, Action* a);
 	//registers action, that causes state change
 	void addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction);
 	//sets state to perform action from
 	//provided action container
-	void setAction(ActionContainer& ac);
+	void setAction(const ActionContainer& ac);
 
 public:
 	void onActionFinish() override;
@@ -37,7 +41,6 @@ protected:
 	//this update is executed regardless of
 	//state's current action
 	virtual void withActionUpdate(const sf::Time& dt) = 0;
-
 	//this update is executed when there is no
 	//action for state to perform currently
 	virtual void noActionUpdate(const sf::Time& dt) = 0;
@@ -49,7 +52,7 @@ public:
 protected:
 	//other helpful methods
 
-	//get application console
+	//get application's console
 	std::ostringstream& getAppConsole();
 	//get mouse position relative to view
 	sf::Vector2f getMousePos(const sf::View& view);

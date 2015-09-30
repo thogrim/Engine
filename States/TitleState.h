@@ -10,7 +10,8 @@ public:
 	TitleState(const State& state);
 	~TitleState();
 
-public:
+protected:
+	void init();
 	void withActionUpdate(const sf::Time& dt);
 	void noActionUpdate(const sf::Time& dt);
 	void onKeyPressed(sf::Keyboard::Key key);

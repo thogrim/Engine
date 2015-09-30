@@ -13,13 +13,16 @@ GameState::GameState(Application& app)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
-	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, 300.f, 0.f));
+
+	storeAction(ac_,new Actions::MoveBy(sf::seconds(2.f), shape_, 300.f, 0.f));
 	auto call1 = [this](){
 		return new TitleState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, -300.f, 0.f));
-	ac3_.storeAction(new Actions::Rotate(this, sf::seconds(1.f), shape_, 45.f));
+
+	storeAction(ac2_,new Actions::MoveBy(sf::seconds(2.f), shape_, -300.f, 0.f));
+
+	storeAction(ac3_,new Actions::Rotate(sf::seconds(1.f), shape_, 45.f));
 }
 
 GameState::GameState(const State& state)
@@ -31,13 +34,16 @@ GameState::GameState(const State& state)
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
-	ac_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, 300.f, 0.f));
+
+	storeAction(ac_, new Actions::MoveBy(sf::seconds(2.f), shape_, 300.f, 0.f));
 	auto call1 = [this](){
 		return new TitleState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
-	ac2_.storeAction(new Actions::MoveBy(this, sf::seconds(2.f), shape_, -300.f, 0.f));
-	ac3_.storeAction(new Actions::Rotate(this, sf::seconds(1.f), shape_, 45.f));
+
+	storeAction(ac2_, new Actions::MoveBy(sf::seconds(2.f), shape_, -300.f, 0.f));
+
+	storeAction(ac3_, new Actions::Rotate(sf::seconds(1.f), shape_, 45.f));
 }
 
 GameState::~GameState(){

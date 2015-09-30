@@ -6,7 +6,7 @@
 namespace Actions{
 	class Rotate : public SimpleAction{
 	public:
-		Rotate(ActionObserver* obs, const sf::Time& duration, sf::Transformable& object, float angle);
+		Rotate(/*ActionObserver* obs, */const sf::Time& duration, sf::Transformable& object, float angle);
 		~Rotate();
 	private:
 		void updateAction(const sf::Time& dt);

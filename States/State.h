@@ -17,9 +17,12 @@ public:
 	virtual ~State();
 
 protected:
+	//stores action a in container ac
+	void storeAction(ActionContainer& ac, Action* a);
 	//registers action, that causes state change
 	void addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction);
-	//sets state's action
+	//sets state to perform action from
+	//provided action container
 	void setAction(ActionContainer& ac);
 
 public:

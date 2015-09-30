@@ -3,8 +3,8 @@
 
 using namespace Actions;
 
-SimpleAction::SimpleAction(ActionObserver* obs , const sf::Time& duration)
-	:Action(obs),
+SimpleAction::SimpleAction(/*ActionObserver* obs ,*/ const sf::Time& duration)
+	:Action(/*obs*/),
 	initialTime_(duration),
 	timeLeft_(duration){
 }

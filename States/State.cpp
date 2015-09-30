@@ -19,9 +19,10 @@ State::State(const State& state)
 State::~State(){
 }
 
-//void State::requestChange(State* state){
-//	app_.changeState(state);
-//}
+void State::storeAction(ActionContainer& ac, Action* a){
+	a->setObserver(this);
+	ac.storeAction(a);
+}
 
 void State::addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction){
 	stateChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);

@@ -1,21 +1,22 @@
 #pragma once
 
 #include <vector>
+#include <cassert>
 #include "../ActionObserver.h"
 #include "Action.h"
 
 namespace Actions{
-	class CompositeAction : public Action, public ActionObserver{
+	class ActionQueue : public Action, public ActionObserver{
 	public:
-		CompositeAction(/*ActionObserver* obs*/);
-		~CompositeAction();
+		ActionQueue(/*ActionObserver* obs*/);
+		~ActionQueue();
 		void addAction(Action* a);
 		void update(const sf::Time& dt);
 		void onActionFinish();
 	private:
 		void updateAction(const sf::Time& dt);
-		std::vector<std::pair<Action*,bool>> actions_;
+		std::vector<Action*> actions_;
 		unsigned int currentAction_;
-		unsigned int finishedActions_;
+		/*unsigned int finishedActions_;*/
 	};
 }

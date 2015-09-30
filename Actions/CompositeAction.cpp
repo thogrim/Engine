@@ -2,8 +2,8 @@
 
 using namespace Actions;
 
-CompositeAction::CompositeAction(ActionObserver* obs)
-	:Action(obs),
+CompositeAction::CompositeAction(/*ActionObserver* obs*/)
+	:Action(/*obs*/),
 	actions_(),
 	currentAction_(0),
 	finishedActions_(0){

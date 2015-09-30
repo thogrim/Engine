@@ -1,7 +1,7 @@
 #include "Action.h"
 
-Action::Action(ActionObserver* obs)
-	:observer_(obs){
+Action::Action(/*ActionObserver* obs*/)
+	:observer_(nullptr){
 }
 
 Action::~Action(){

@@ -31,7 +31,7 @@ void GameState::init(){
 	shape_.setPosition(450.f, 300.f);
 
 	storeAction(ac_, new Actions::MoveBy(sf::seconds(2.f), shape_, 300.f, 0.f));
-	auto call1 = [this](){
+	auto call1 = [this]()->State*{
 		return new TitleState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
@@ -68,6 +68,15 @@ void GameState::onResized(const sf::Event::SizeEvent& size){
 	world_.resizeCamera(size.width, size.height);
 }
 
+void GameState::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
+
+}
+void GameState::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
+
+}
+void GameState::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
+
+}
 
 void GameState::withActionUpdate(const sf::Time& dt){
 	sf::Vector2f worldMousePos = getMousePos(world_.getCamera());

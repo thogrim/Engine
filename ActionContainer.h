@@ -10,7 +10,7 @@ public:
 	virtual ~ActionContainer();
 	void storeAction(Action* action);
 	Action* getAction() const;
-private:
+protected:
 	Action* action_;
 };
 

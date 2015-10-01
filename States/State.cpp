@@ -1,13 +1,12 @@
 #include "State.h"
-//#include "../Application.h"
 #include "../Actions/Action.h"
+#include "../GUI/Component.h"
 
 State::State(Application& app)
 	:app_(app),
 	action_(nullptr),
 	stateChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
-	//init();
 }
 
 State::State(const State& state)
@@ -15,7 +14,6 @@ State::State(const State& state)
 	action_(nullptr),
 	stateChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
-	//init();
 }
 
 State::~State(){
@@ -33,23 +31,8 @@ void State::addStateChangeCallback(const ActionContainer& ac, std::function<Stat
 void State::setAction(const ActionContainer& ac){
 	//dont set new action when there is still
 	//action to perform
-	if (action_)
-		return;
-
-	action_ = ac.getAction();
-	//check if action changes state
-	//auto it = std::find_if(stateChangeCallbacks_.begin(), stateChangeCallbacks_.end(),
-	//	[action](const StateChangeCallback& callback){
-	//	return  callback.first == action;
-	//});
-
-	////if it does, let it perform
-	//if (it != stateChangeCallbacks_.end())
-	//	action_ = action;
-
-	////else copy action, and perform its copy
-	//else
-	//	action_ = action->clone();
+	if (!action_)
+		action_ = ac.getAction();
 }
 
 void State::onActionFinish(){
@@ -70,16 +53,18 @@ void State::onActionFinish(){
 		action_ = nullptr;
 }
 
+void State::onGuiComponentReleased(const GUI::Component& component){
+	setAction(component);
+}
+
 void State::update(const sf::Time& dt){
 	withActionUpdate(dt);
 	if (action_){
-		app_ << "Performing action\n";
+		app_.getConsole() << "Performing action\n";
 		action_->update(dt);
 	}
 	else
 		noActionUpdate(dt);
-
-	//if (action_)
 }
 
 std::ostringstream& State::getAppConsole(){

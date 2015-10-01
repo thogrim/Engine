@@ -16,6 +16,9 @@ public:
 	void noActionUpdate(const sf::Time& dt);
 	void onKeyPressed(sf::Keyboard::Key key);
 	void onResized(const sf::Event::SizeEvent& size);
+	void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton);
+	void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton);
+	void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:

@@ -10,7 +10,8 @@ TitleState::TitleState(Application& app)
 	world_(),
 	shape_(sf::Vector2f(100.f,100.f)),
 	ac_(),
-	ac2_(){
+	ac2_(),
+	testButton_(){
 	init();
 }
 
@@ -19,7 +20,8 @@ TitleState::TitleState(const State& state)
 	world_(),
 	shape_(sf::Vector2f(100.f, 100.f)),
 	ac_(),
-	ac2_(){
+	ac2_(),
+	testButton_(){
 	init();
 }
 
@@ -35,7 +37,7 @@ void TitleState::init(){
 	//move shape 
 	storeAction(ac_, new Actions::MoveBy(sf::seconds(1.f), shape_, 100.f, 0.f));
 	//and go to Game State
-	auto call1 = [this](){
+	auto call1 = [this]()->State*{
 		return new GameState(*this);
 	};
 	addStateChangeCallback(ac_, call1);
@@ -58,6 +60,15 @@ void TitleState::init(){
 	};
 	addStateChangeCallback(ac3_, call3);
 
+	//TEST OF GUI COMPONENT
+	testButton_.setPosition(500, 300);
+	testButton_.setObserver(this);
+	sf::Texture texture{};
+	if (!texture.loadFromFile("res/img/play.png")){
+		std::cout << "sprite for component testing not loaded!\n";
+	}
+	testButton_.setTexture(texture);
+	storeAction(testButton_, new Actions::Rotate(sf::seconds(1.f),shape_,90.f));
 	//starting action
 	//setAction(ac3_);
 }
@@ -90,7 +101,21 @@ void TitleState::onResized(const sf::Event::SizeEvent& size){
 	world_.resizeCamera(size.width, size.height);
 }
 
+
+void TitleState::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
+	testButton_.onMouseButtonPressed(mouseButton);
+}
+
+void TitleState::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
+	testButton_.onMouseButtonReleased(mouseButton);
+}
+
+void TitleState::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
+	testButton_.onMouseMoved(mouseMove);
+}
+
 void TitleState::withActionUpdate(const sf::Time& dt){
+	//print world's mouse position and world's camera zoom
 	sf::Vector2f worldMousePos = getMousePos(world_.getCamera());
 	getAppConsole() << "World's mouse position: " << worldMousePos.x << " " << worldMousePos.y << std::endl
 		<< "Current world zoom: " << world_.getZoom() << std::endl;
@@ -108,4 +133,5 @@ void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	//draw
 	target.draw(world_);
 	target.draw(shape_);
+	target.draw(testButton_);
 }

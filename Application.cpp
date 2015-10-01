@@ -77,20 +77,22 @@ std::ostringstream& Application::getConsole(){
 	return console_.stream_;
 }
 
-std::ostringstream& Application::operator<<(const std::string& info){
-	console_.stream_ << info;
-	return console_.stream_;
-}
+//std::ostringstream& Application::operator<<(const std::string& info){
+//	console_.stream_ << info;
+//	return console_.stream_;
+//}
 
 void Application::processEvents(){
 	sf::Event ev;
 	while (window_.pollEvent(ev)){
 		switch (ev.type){
 
+		//WINDOW CLOSING
 		case sf::Event::Closed:
 			window_.close();
 			break;
 
+		//PRESSING KEY
 		case sf::Event::KeyPressed:
 			if (ev.key.code == sf::Keyboard::Escape)//close window
 				window_.close();
@@ -100,14 +102,37 @@ void Application::processEvents(){
 				state_->onKeyPressed(ev.key.code);
 			break;
 
+		//PRESSING MOUSE BUTTON
+		case sf::Event::MouseButtonPressed:
+			//if (ev.mouseButton.button == sf::Mouse::Left){
+			//	std::cout << "left mouse button pressed\n"
+			//		<< "x= " << ev.mouseButton.x << std::endl
+			//		<< "y= " << ev.mouseButton.y << std::endl;
+			//}
+			state_->onMouseButtonPressed(ev.mouseButton);
+			break;
+
+		//RELEASING MOUSE BUTTON
+		case sf::Event::MouseButtonReleased:
+			state_->onMouseButtonReleased(ev.mouseButton);
+			break;
+
+		//MOVING MOUSE
+		case sf::Event::MouseMoved:
+			state_->onMouseMoved(ev.mouseMove);
+			break;
+
+		//RESIZING WINDOW
 		case sf::Event::Resized:
 			state_->onResized(ev.size);
 			break;
 
+		//WINDOW LOOSING FOCUS
 		case sf::Event::LostFocus:
 			hasFocus_ = false;
 			break;
 
+		//WINDOW GAINING FOCUS
 		case sf::Event::GainedFocus:
 			hasFocus_ = true;
 			break;
@@ -118,6 +143,8 @@ void Application::processEvents(){
 void Application::update(const sf::Time& dt){
 	if (hasFocus_){
 		console_.update(dt);
+		sf::Vector2i mousePos = sf::Mouse::getPosition(window_);
+		console_.stream_ << "Window's mouse pos: " << mousePos.x << " " << mousePos.y << std::endl;
 		state_->update(dt);
 	}
 }

@@ -19,7 +19,7 @@ public:
 	sf::RenderWindow& getWindow();
 	void changeState(State* state);
 	std::ostringstream& getConsole();
-	std::ostringstream& operator<<(const std::string& info);
+	//std::ostringstream& operator<<(const std::string& info);
 private:
 	void processEvents();
 	void update(const sf::Time& dt);

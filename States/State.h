@@ -5,11 +5,12 @@
 #include <SFML/Graphics.hpp>
 #include "../Application.h"
 #include "../ActionObserver.h"
+#include "../GUI/GuiObserver.h"
 #include "../ActionContainer.h"
 
 class Action;
 
-class State: public sf::Drawable, public ActionObserver{
+class State: public GuiObserver, public sf::Drawable, public ActionObserver{
 public:
 	State(Application& app);
 	State(const State& state);
@@ -30,11 +31,20 @@ protected:
 	void setAction(const ActionContainer& ac);
 
 public:
+	//method performed when action has ended
 	void onActionFinish() override;
+	//method performed when GUI component was released correctly
+	void onGuiComponentReleased(const GUI::Component& component);
 	//method performed when key is pressed
 	virtual void onKeyPressed(sf::Keyboard::Key key)=0;
 	//method performed when window is resized
-	virtual void onResized(const sf::Event::SizeEvent& size)=0;
+	virtual void onResized(const sf::Event::SizeEvent& size) = 0;
+	//method performed when mouse button is pressed
+	virtual void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton) = 0;
+	//method performed when mouse button is released
+	virtual void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton) = 0;
+	//method performed when mouse is moving
+	virtual void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove) = 0;
 	//virtual void onAnotherEventType()=0;
 
 protected:

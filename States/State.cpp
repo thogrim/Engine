@@ -24,6 +24,12 @@ void State::storeAction(ActionContainer& ac, Action* a){
 	ac.storeAction(a);
 }
 
+void State::storeAction(GUI::Component& comp, Action* a){
+	a->setObserver(this);
+	comp.setObserver(this);
+	comp.storeAction(a);
+}
+
 void State::addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction){
 	stateChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);
 }

@@ -24,6 +24,8 @@ protected:
 	virtual void init()=0;
 	//stores action a in container ac
 	void storeAction(ActionContainer& ac, Action* a);
+	//stores action a in GUI component
+	void storeAction(GUI::Component& comp, Action* a);
 	//registers action, that causes state change
 	void addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction);
 	//sets state to perform action from

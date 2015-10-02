@@ -3,8 +3,7 @@
 #include "State.h"
 #include "../World.h"
 #include "../ActionContainer.h"
-//test
-#include "../GUI/Component.h"
+#include "../GUI/Button.h"
 
 class TitleState: public State{
 public:
@@ -31,6 +30,6 @@ private:
 	ActionContainer ac3_;
 
 	//test
-	GUI::Component testButton_;
+	GUI::Button testButton_;
 };
 

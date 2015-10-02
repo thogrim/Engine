@@ -5,32 +5,52 @@ using namespace GUI;
 
 Component::Component()
 	:sprite_(),
+	text_(),
 	hovered_(false),
 	pressed_(false),
-	parent_(nullptr),
+	//parent_(nullptr),
 	observer_(nullptr){
 }
 
 Component::~Component(){
 }
 
+void Component::setTexture(const sf::Texture& texture){
+	sprite_.setTexture(texture, true);
+}
+
+void Component::setText(const std::string& string, const sf::Font& font, unsigned int characterSize){
+	text_.setString(string);
+	text_.setFont(font);
+	text_.setCharacterSize(characterSize);
+}
+
+void Component::setTextPosition(float x, float y){
+	text_.setPosition(x, y);
+}
+
 void Component::setObserver(GuiObserver* obs){
 	observer_ = obs;
 }
 
-void Component::setTexture(const sf::Texture& texture){
-	sprite_.setTexture(texture, true);//true resets TextureRect to texture's size
+const sf::FloatRect& Component::getSize() const{
+	return sprite_.getLocalBounds();
 }
 
-void Component::setParent(Component* parent){
-	parent_ = parent;
+bool Component::hovered() const{
+	return hovered_;
 }
+
+//void Component::setParent(Component* parent){
+//	parent_ = parent;
+//}
 
 void Component::onMouseButtonPressed(sf::Event::MouseButtonEvent mouseButton){
 	if (mouseButton.button == sf::Mouse::Button::Left){
-		if (hovered_)
+		if (hovered_){
 			pressed_ = true;
-			//onPressed()
+			onSpritePressed();
+		}
 	}
 }
 
@@ -40,12 +60,12 @@ void Component::onMouseButtonReleased(sf::Event::MouseButtonEvent mouseButton){
 			//notify observer
 			observer_->onGuiComponentReleased(*this);
 		}
+		onSpriteReleased();
 		pressed_ = false;
-		//onRelease();
 	}
 }
 
-//To refactor
+//TODO
 void Component::onMouseMoved(sf::Event::MouseMoveEvent mouseMove){
 	mouseMove.x -= getPosition().x;
 	mouseMove.y -= getPosition().y;
@@ -53,19 +73,16 @@ void Component::onMouseMoved(sf::Event::MouseMoveEvent mouseMove){
 	if (sprite_.getLocalBounds().contains(mouseMove.x, mouseMove.y)){
 		if (!hovered_){
 			hovered_ = true;
-			//and maybe set sprite to hovered sprite
-			//use pure virtual method like
-			//onMouseEnter()
+			onMouseEnter();
 		}
 	}
 	else{
 		if (hovered_){
 			hovered_ = false;
-			//onMouseLeave();
+			onMouseLeave();
 		}
 	}
 }
-
 
 void Component::update(const sf::Time& dt){
 	//animation update

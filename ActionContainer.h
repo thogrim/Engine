@@ -13,4 +13,3 @@ public:
 protected:
 	Action* action_;
 };
-

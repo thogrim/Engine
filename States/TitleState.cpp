@@ -63,11 +63,11 @@ void TitleState::init(){
 	//TEST OF GUI COMPONENT
 	testButton_.setPosition(500, 300);
 	testButton_.setObserver(this);
-	sf::Texture texture{};
-	if (!texture.loadFromFile("res/img/play.png")){
+	sf::Texture* texture = new sf::Texture();
+	if (!texture->loadFromFile("res/img/play.png")){
 		std::cout << "sprite for component testing not loaded!\n";
 	}
-	testButton_.setTexture(texture);
+	testButton_.setTexture(*texture);
 	storeAction(testButton_, new Actions::Rotate(sf::seconds(1.f),shape_,90.f));
 	//starting action
 	//setAction(ac3_);

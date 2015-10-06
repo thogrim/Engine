@@ -2,8 +2,8 @@
 
 using namespace Actions;
 
-ActionQueue::ActionQueue(/*ActionObserver* obs*/)
-	:Action(/*obs*/),
+ActionQueue::ActionQueue()
+	:Action(),
 	actions_(),
 	currentAction_(0){
 }

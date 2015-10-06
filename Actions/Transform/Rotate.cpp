@@ -2,8 +2,8 @@
 
 using namespace Actions;
 
-Rotate::Rotate(/*ActionObserver* obs,*/ const sf::Time& duration, sf::Transformable& object, float angle)
-	:SimpleAction(/*obs,*/ duration),
+Rotate::Rotate(const sf::Time& duration, sf::Transformable& object, float angle)
+	:SimpleAction(duration),
 	object_(object),
 	velocity_(angle/duration.asSeconds()){
 }

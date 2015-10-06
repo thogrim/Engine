@@ -7,6 +7,7 @@ class GuiObserver;
 
 namespace GUI{
 	class Component: public ActionContainer, public sf::Transformable, public sf::Drawable{
+		friend class Menu;
 	public:
 		Component();
 		virtual ~Component();
@@ -14,8 +15,11 @@ namespace GUI{
 		void setText(const std::string& string, const sf::Font& font, unsigned int characterSize);
 		void setTextPosition(float x, float y);
 		void setObserver(GuiObserver* obs);
-		const sf::FloatRect& getSize() const;
-		bool hovered() const;
+		void setActive(bool active);
+		//void setColor(sf::Color color);
+		//sf::Sprite& getSprite();
+		//const sf::FloatRect& getSize() const;
+		bool contains(float x, float y) const;
 		//virtual ?
 		void onMouseButtonPressed(sf::Event::MouseButtonEvent mouseButton);
 		void onMouseButtonReleased(sf::Event::MouseButtonEvent mouseButton);
@@ -33,7 +37,7 @@ namespace GUI{
 		sf::Text text_;
 		bool hovered_;
 		bool pressed_;
-		//Component* parent_;
+		bool active_;
 	private:
 		GuiObserver* observer_;
 	};

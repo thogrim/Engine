@@ -3,7 +3,8 @@
 #include "State.h"
 #include "../World.h"
 #include "../ActionContainer.h"
-#include "../GUI/Button.h"
+//#include "../GUI/Button.h"
+#include "../GUI/Menu.h"
 
 class TitleState: public State{
 public:
@@ -30,6 +31,10 @@ private:
 	ActionContainer ac3_;
 
 	//test
-	GUI::Button testButton_;
+	sf::Texture* buttonTex_;
+	sf::Texture* menuTex_;
+	//GUI::Button testButton_;
+	GUI::Menu menu_;
+	GUI::Menu menu2_;
 };
 

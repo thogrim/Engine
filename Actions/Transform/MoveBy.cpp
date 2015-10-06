@@ -2,8 +2,8 @@
 
 using namespace Actions;
 
-MoveBy::MoveBy(/*ActionObserver* obs,*/ const sf::Time& duration, sf::Transformable& object, float dx, float dy)
-	:SimpleAction(/*obs,*/duration),
+MoveBy::MoveBy(const sf::Time& duration, sf::Transformable& object, float dx, float dy)
+	:SimpleAction(duration),
 	object_(object),
 	velocity_(dx/duration.asSeconds(),dy/duration.asSeconds()){
 }

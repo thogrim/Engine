@@ -1,7 +1,6 @@
 #include "GameState.h"
 #include "TitleState.h"
-#include "../Actions/MoveBy.h"
-#include "../Actions/Rotate.h"
+#include "../Actions/Transforms.h"
 
 GameState::GameState(Application& app)
 	:State(app),

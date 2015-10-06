@@ -8,7 +8,7 @@
 namespace Actions{
 	class ActionQueue : public Action, public ActionObserver{
 	public:
-		ActionQueue(/*ActionObserver* obs*/);
+		ActionQueue();
 		~ActionQueue();
 		void addAction(Action* a);
 		void update(const sf::Time& dt);
@@ -17,6 +17,5 @@ namespace Actions{
 		void updateAction(const sf::Time& dt);
 		std::vector<Action*> actions_;
 		unsigned int currentAction_;
-		/*unsigned int finishedActions_;*/
 	};
 }

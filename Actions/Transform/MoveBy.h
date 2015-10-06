@@ -1,12 +1,12 @@
 #pragma once
 
 #include <SFML/Graphics/Transformable.hpp>
-#include "SimpleAction.h"
+#include "../SimpleAction.h"
 
 namespace Actions{
 	class MoveBy: public SimpleAction{
 	public:
-		MoveBy(/*ActionObserver* obs, */const sf::Time& duration, sf::Transformable& object, float dx, float dy);
+		MoveBy(const sf::Time& duration, sf::Transformable& object, float dx, float dy);
 		~MoveBy();
 	private:
 		void updateAction(const sf::Time& dt);

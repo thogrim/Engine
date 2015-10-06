@@ -8,7 +8,7 @@ Component::Component()
 	text_(),
 	hovered_(false),
 	pressed_(false),
-	//parent_(nullptr),
+	active_(true),
 	observer_(nullptr){
 }
 
@@ -33,19 +33,33 @@ void Component::setObserver(GuiObserver* obs){
 	observer_ = obs;
 }
 
-const sf::FloatRect& Component::getSize() const{
-	return sprite_.getLocalBounds();
+void Component::setActive(bool active){
+	active_ = active;
 }
 
-bool Component::hovered() const{
-	return hovered_;
-}
+//void Component::setColor(sf::Color color){
+//	sprite_.setColor(color);
+//}
 
-//void Component::setParent(Component* parent){
-//	parent_ = parent;
+//sf::Sprite& Component::getSprite(){
+//	return sprite_;
+//}
+
+bool Component::contains(float x, float y) const{
+	return sprite_.getLocalBounds().contains(x, y);
+}
+//
+//bool Component::hovered() const{
+//	return hovered_;
+//}
+//
+//bool Component::pressed() const{
+//	return pressed_;
 //}
 
 void Component::onMouseButtonPressed(sf::Event::MouseButtonEvent mouseButton){
+	if (!active_)
+		return;
 	if (mouseButton.button == sf::Mouse::Button::Left){
 		if (hovered_){
 			pressed_ = true;
@@ -55,6 +69,8 @@ void Component::onMouseButtonPressed(sf::Event::MouseButtonEvent mouseButton){
 }
 
 void Component::onMouseButtonReleased(sf::Event::MouseButtonEvent mouseButton){
+	if (!active_)
+		return;
 	if (mouseButton.button == sf::Mouse::Button::Left){
 		if (hovered_ && pressed_){
 			//notify observer
@@ -67,6 +83,8 @@ void Component::onMouseButtonReleased(sf::Event::MouseButtonEvent mouseButton){
 
 //TODO
 void Component::onMouseMoved(sf::Event::MouseMoveEvent mouseMove){
+	if (!active_)
+		return;
 	mouseMove.x -= getPosition().x;
 	mouseMove.y -= getPosition().y;
 	//smth like that
@@ -89,6 +107,8 @@ void Component::update(const sf::Time& dt){
 }
 
 void Component::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+	if (!active_)
+		return;
 	states.transform *= getTransform();
 	target.draw(sprite_, states);
 }

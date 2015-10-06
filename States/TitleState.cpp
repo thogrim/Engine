@@ -1,9 +1,10 @@
 #include "TitleState.h"
 #include "GameState.h"
-#include "../Actions/MoveBy.h"
-#include "../Actions/Rotate.h"
+#include "../Actions/Transforms.h"
+#include "../Actions/GUI.h"
 #include "../Actions/CompositeAction.h"
 #include "../Actions/ActionQueue.h"
+#include "../GUI/Button.h"
 
 TitleState::TitleState(Application& app)
 	:State(app),
@@ -11,7 +12,8 @@ TitleState::TitleState(Application& app)
 	shape_(sf::Vector2f(100.f,100.f)),
 	ac_(),
 	ac2_(),
-	testButton_(){
+	buttonTex_(new sf::Texture()),
+	menuTex_(new sf::Texture()){
 	init();
 }
 
@@ -21,17 +23,20 @@ TitleState::TitleState(const State& state)
 	shape_(sf::Vector2f(100.f, 100.f)),
 	ac_(),
 	ac2_(),
-	testButton_(){
+	buttonTex_(new sf::Texture()),
+	menuTex_(new sf::Texture()){
 	init();
 }
 
 TitleState::~TitleState(){
+	delete buttonTex_;
+	delete menuTex_;
 }
 
 void TitleState::init(){
 	world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
-	shape_.setPosition(450.f, 250.f);
+	shape_.setPosition(100.f, 200.f);
 	shape_.setOrigin(50.f, 50.f);
 
 	//move shape 
@@ -42,11 +47,7 @@ void TitleState::init(){
 	};
 	addStateChangeCallback(ac_, call1);
 
-	//move shape
 	storeAction(ac2_, new Actions::Rotate(sf::seconds(1.f), shape_, 90.f));
-	//State*(*f)(State&) = [](State& state){
-	//	return new GameState(state);
-	//}(*this);
 
 	//move shape in square and go to GameState
 	Actions::ActionQueue* queue = new Actions::ActionQueue();
@@ -61,16 +62,52 @@ void TitleState::init(){
 	addStateChangeCallback(ac3_, call3);
 
 	//TEST OF GUI COMPONENT
-	testButton_.setPosition(500, 300);
-	testButton_.setObserver(this);
-	sf::Texture* texture = new sf::Texture();
-	if (!texture->loadFromFile("res/img/play.png")){
-		std::cout << "sprite for component testing not loaded!\n";
+	if (!buttonTex_->loadFromFile("res/img/play.png")){
+		std::cout << "sprite for button testing not loaded!\n";
 	}
-	testButton_.setTexture(*texture);
-	storeAction(testButton_, new Actions::Rotate(sf::seconds(1.f),shape_,90.f));
-	//starting action
-	//setAction(ac3_);
+	if (!menuTex_->loadFromFile("res/img/mainmenu.png")){
+		std::cout << "sprite for menu testing not loaded!\n";
+	}
+	//1st button
+	GUI::Button* playButton = new GUI::Button();
+	playButton->setTexture(*buttonTex_);
+	playButton->setPosition(50.f, 100.f);
+	storeAction(*playButton, new Actions::Rotate(sf::seconds(1.f), shape_, 90.f));
+	//second button
+	GUI::Button* playButton2 = new GUI::Button();
+	playButton2->setTexture(*buttonTex_);
+	playButton2->setPosition(50.f, 150.f);
+	storeAction(*playButton2, new Actions::Rotate(sf::seconds(1.f), shape_, -90.f));
+	//third button
+	GUI::Button* playButton3 = new GUI::Button();
+	playButton3->setTexture(*buttonTex_);
+	playButton3->setPosition(50.f, 200.f);
+	Actions::ActionQueue* queue3 = new Actions::ActionQueue();
+	queue3->addAction(new Actions::SetActive(menu_, false));
+	queue3->addAction(new Actions::SetActive(menu2_, true));
+	storeAction(*playButton3, queue3);
+	//menu1
+	menu_.setTexture(*menuTex_);
+	menu_.setPosition(300.f, 300.f);
+	menu_.addComponent(playButton);
+	menu_.addComponent(playButton2);
+	menu_.addComponent(playButton3);
+	///////////////
+
+	//second menu button
+	GUI::Button* menu2button = new GUI::Button();
+	menu2button->setTexture(*buttonTex_);
+	menu2button->setPosition(50.f, 100.f);
+	Actions::ActionQueue* queue4 = new Actions::ActionQueue();
+	queue4->addAction(new Actions::SetActive(menu2_, false));
+	queue4->addAction(new Actions::SetActive(menu_, true));
+	storeAction(*menu2button, queue4);
+	//menu2
+	menu2_.setTexture(*menuTex_);
+	menu2_.setPosition(600.f, 300.f);
+	menu2_.addComponent(menu2button);
+	menu2_.setActive(false);
+
 }
 
 void TitleState::onKeyPressed(sf::Keyboard::Key key){
@@ -103,15 +140,21 @@ void TitleState::onResized(const sf::Event::SizeEvent& size){
 
 
 void TitleState::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
-	testButton_.onMouseButtonPressed(mouseButton);
+	//testButton_.onMouseButtonPressed(mouseButton);
+	menu_.onMouseButtonPressed(mouseButton);
+	menu2_.onMouseButtonPressed(mouseButton);
 }
 
 void TitleState::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
-	testButton_.onMouseButtonReleased(mouseButton);
+	//testButton_.onMouseButtonReleased(mouseButton);
+	menu_.onMouseButtonReleased(mouseButton);
+	menu2_.onMouseButtonReleased(mouseButton);
 }
 
 void TitleState::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
-	testButton_.onMouseMoved(mouseMove);
+	//testButton_.onMouseMoved(mouseMove);
+	menu_.onMouseMoved(mouseMove);
+	menu2_.onMouseMoved(mouseMove);
 }
 
 void TitleState::withActionUpdate(const sf::Time& dt){
@@ -133,5 +176,7 @@ void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	//draw
 	target.draw(world_);
 	target.draw(shape_);
-	target.draw(testButton_);
+	//target.draw(testButton_);
+	target.draw(menu_);
+	target.draw(menu2_);
 }

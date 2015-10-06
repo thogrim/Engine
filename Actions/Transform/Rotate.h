@@ -1,12 +1,12 @@
 #pragma once
 
 #include <SFML/Graphics/Transformable.hpp>
-#include "SimpleAction.h"
+#include "../SimpleAction.h"
 
 namespace Actions{
 	class Rotate : public SimpleAction{
 	public:
-		Rotate(/*ActionObserver* obs, */const sf::Time& duration, sf::Transformable& object, float angle);
+		Rotate(const sf::Time& duration, sf::Transformable& object, float angle);
 		~Rotate();
 	private:
 		void updateAction(const sf::Time& dt);

@@ -9,6 +9,7 @@
 #include "../ActionContainer.h"
 
 class Action;
+class StateBehaviour;
 
 class State: public GuiObserver, public sf::Drawable, public ActionObserver{
 public:
@@ -28,9 +29,13 @@ protected:
 	void storeAction(GUI::Component& comp, Action* a);
 	//registers action, that causes state change
 	void addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction);
+	//registers action, that causes behaviour change
+	void addBehaviourChangeCallback(const ActionContainer& ac, std::function<StateBehaviour*()> changeFunction);
 	//sets state to perform action from
 	//provided action container
 	void setAction(const ActionContainer& ac);
+	//sets current behaviour
+	//void setBehaviour(StateBehaviour* newBehaviour);
 
 public:
 	//method performed when action has ended
@@ -38,15 +43,15 @@ public:
 	//method performed when GUI component was released correctly
 	void onGuiComponentReleased(const GUI::Component& component);
 	//method performed when key is pressed
-	virtual void onKeyPressed(sf::Keyboard::Key key)=0;
+	virtual void onKeyPressed(sf::Keyboard::Key key);
 	//method performed when window is resized
 	virtual void onResized(const sf::Event::SizeEvent& size) = 0;
 	//method performed when mouse button is pressed
-	virtual void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton) = 0;
+	virtual void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton);
 	//method performed when mouse button is released
-	virtual void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton) = 0;
+	virtual void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton);
 	//method performed when mouse is moving
-	virtual void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove) = 0;
+	virtual void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove);
 	//virtual void onAnotherEventType()=0;
 
 protected:
@@ -55,11 +60,11 @@ protected:
 	virtual void withActionUpdate(const sf::Time& dt) = 0;
 	//this update is executed when there is no
 	//action for state to perform currently
-	virtual void noActionUpdate(const sf::Time& dt) = 0;
+	virtual void noActionUpdate(const sf::Time& dt);
 
 public:
 	void update(const sf::Time& dt);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 protected:
 	//other helpful methods
@@ -74,9 +79,18 @@ private:
 	Application& app_;
 	//current action to perform
 	Action* action_;
+
+protected:
+	//current behaviour
+	StateBehaviour* behaviour_;
+
+private:
 	//container holding pointers to actions that cause state to change
 	typedef std::pair < Action*, std::function<State*()>> StateChangeCallback;
 	std::vector<StateChangeCallback> stateChangeCallbacks_;
+	//container holding pointers to actions that cause behaviour to change
+	typedef std::pair < Action*, std::function<StateBehaviour*()>> BehaviourChangeCallback;
+	std::vector<BehaviourChangeCallback> behaviourChangeCallbacks_;
 protected:
 	sf::View camera_;
 };

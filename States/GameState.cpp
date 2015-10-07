@@ -29,17 +29,15 @@ void GameState::init(){
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(450.f, 300.f);
 
-	storeAction(ac_, new Actions::MoveBy(sf::seconds(2.f), shape_, 300.f, 0.f));
-	auto call1 = [this]()->State*{
-		return new TitleState(*this);
-	};
-	addStateChangeCallback(ac_, call1);
+	storeAction(ac_, new Actions::Rotate(sf::seconds(1.f), shape_, 360.f));
 
-	storeAction(ac2_, new Actions::MoveBy(sf::seconds(2.f), shape_, -300.f, 0.f));
+	storeAction(ac2_, new Actions::Rotate(sf::seconds(1.f), shape_, -360.f));
 
 	storeAction(ac3_, new Actions::Rotate(sf::seconds(1.f), shape_, 45.f));
 
-	setAction(ac3_);
+	addStateChangeCallback(ac3_, [this](){
+		return new TitleState(*this);
+	});
 }
 
 void GameState::onKeyPressed(sf::Keyboard::Key key){
@@ -53,7 +51,7 @@ void GameState::onKeyPressed(sf::Keyboard::Key key){
 	case sf::Keyboard::Num2:
 		setAction(ac2_);
 		break;
-	case sf::Keyboard::Num3:
+	case sf::Keyboard::B:
 		setAction(ac3_);
 		break;
 	}

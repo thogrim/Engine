@@ -8,7 +8,7 @@
 
 TitleState::TitleState(Application& app)
 	:State(app),
-	world_(),
+	//world_(),
 	shape_(sf::Vector2f(100.f,100.f)),
 	ac_(),
 	ac2_(),
@@ -19,7 +19,7 @@ TitleState::TitleState(Application& app)
 
 TitleState::TitleState(const State& state)
 	:State(state),
-	world_(),
+	//world_(),
 	shape_(sf::Vector2f(100.f, 100.f)),
 	ac_(),
 	ac2_(),
@@ -34,32 +34,20 @@ TitleState::~TitleState(){
 }
 
 void TitleState::init(){
-	world_.setCamera(camera_);
+	//world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(100.f, 200.f);
 	shape_.setOrigin(50.f, 50.f);
 
-	//move shape 
-	storeAction(ac_, new Actions::MoveBy(sf::seconds(1.f), shape_, 100.f, 0.f));
-	//and go to Game State
-	auto call1 = [this]()->State*{
-		return new GameState(*this);
-	};
-	addStateChangeCallback(ac_, call1);
+	storeAction(ac_, new Actions::Rotate(sf::seconds(1.f), shape_, 180.f));
 
 	storeAction(ac2_, new Actions::Rotate(sf::seconds(1.f), shape_, 90.f));
 
-	//move shape in square and go to GameState
-	Actions::ActionQueue* queue = new Actions::ActionQueue();
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 200.f, 0.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0, 200.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, -200.f, 0.f));
-	queue->addAction(new Actions::MoveBy(sf::seconds(2.f), shape_, 0.f, -220.f));
-	storeAction(ac3_, queue);
-	auto call3 = [this](){
+	//rotate shape by 180 deg and go to GameState
+	storeAction(ac3_, new Actions::Rotate(sf::seconds(1.f), shape_, 180.f));
+	addStateChangeCallback(ac3_, [this](){
 		return new GameState(*this);
-	};
-	addStateChangeCallback(ac3_, call3);
+	});
 
 	//TEST OF GUI COMPONENT
 	if (!buttonTex_->loadFromFile("res/img/play.png")){
@@ -108,13 +96,20 @@ void TitleState::init(){
 	menu2_.addComponent(menu2button);
 	menu2_.setActive(false);
 
+	addBehaviourChangeCallback(*playButton3, [this](){
+		return new ChooseLevelBehaviour(menu2_);
+	});
+	addBehaviourChangeCallback(*menu2button, [this](){
+		return new MainMenuBehaviour(menu_);
+	});
+	behaviour_ = new MainMenuBehaviour(menu_);
 }
 
 void TitleState::onKeyPressed(sf::Keyboard::Key key){
 	switch (key){
-	case sf::Keyboard::R:
-		world_.resetCamera();
-		break;
+	//case sf::Keyboard::R:
+	//	world_.resetCamera();
+	//	break;
 	case sf::Keyboard::Num1:
 		setAction(ac_);
 		break;
@@ -135,38 +130,35 @@ void TitleState::onResized(const sf::Event::SizeEvent& size){
 	camera_.setSize(static_cast<float>(size.width), static_cast<float>(size.height));
 
 	//resize world camera
-	world_.resizeCamera(size.width, size.height);
+	//world_.resizeCamera(size.width, size.height);
 }
 
-
-void TitleState::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
-	//testButton_.onMouseButtonPressed(mouseButton);
-	menu_.onMouseButtonPressed(mouseButton);
-	menu2_.onMouseButtonPressed(mouseButton);
-}
-
-void TitleState::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
-	//testButton_.onMouseButtonReleased(mouseButton);
-	menu_.onMouseButtonReleased(mouseButton);
-	menu2_.onMouseButtonReleased(mouseButton);
-}
-
-void TitleState::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
-	//testButton_.onMouseMoved(mouseMove);
-	menu_.onMouseMoved(mouseMove);
-	menu2_.onMouseMoved(mouseMove);
-}
+//
+//void TitleState::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
+//	menu_.onMouseButtonPressed(mouseButton);
+//	menu2_.onMouseButtonPressed(mouseButton);
+//}
+//
+//void TitleState::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
+//	menu_.onMouseButtonReleased(mouseButton);
+//	menu2_.onMouseButtonReleased(mouseButton);
+//}
+//
+//void TitleState::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
+//	menu_.onMouseMoved(mouseMove);
+//	menu2_.onMouseMoved(mouseMove);
+//}
 
 void TitleState::withActionUpdate(const sf::Time& dt){
 	//print world's mouse position and world's camera zoom
-	sf::Vector2f worldMousePos = getMousePos(world_.getCamera());
-	getAppConsole() << "World's mouse position: " << worldMousePos.x << " " << worldMousePos.y << std::endl
-		<< "Current world zoom: " << world_.getZoom() << std::endl;
+	//sf::Vector2f worldMousePos = getMousePos(world_.getCamera());
+	//getAppConsole() << "World's mouse position: " << worldMousePos.x << " " << worldMousePos.y << std::endl
+	//	<< "Current world zoom: " << world_.getZoom() << std::endl;
 }
 
 void TitleState::noActionUpdate(const sf::Time& dt){
 	//update world
-	world_.update(dt);
+	//world_.update(dt);
 }
 
 void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -174,9 +166,7 @@ void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	target.setView(camera_);
 
 	//draw
-	target.draw(world_);
+	//target.draw(world_);
 	target.draw(shape_);
-	//target.draw(testButton_);
-	target.draw(menu_);
-	target.draw(menu2_);
+	target.draw(*behaviour_);
 }

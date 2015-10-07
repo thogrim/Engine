@@ -1,22 +1,28 @@
 #include "State.h"
+#include "StateBehaviour.h"
 #include "../Actions/Action.h"
 #include "../GUI/Component.h"
 
 State::State(Application& app)
 	:app_(app),
 	action_(nullptr),
+	behaviour_(nullptr),
 	stateChangeCallbacks_(),
+	behaviourChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
 }
 
 State::State(const State& state)
 	:app_(state.app_),
 	action_(nullptr),
+	behaviour_(nullptr),
 	stateChangeCallbacks_(),
+	behaviourChangeCallbacks_(),
 	camera_(app_.getWindow().getView()){
 }
 
 State::~State(){
+	delete behaviour_;
 }
 
 void State::storeAction(ActionContainer& ac, Action* a){
@@ -32,6 +38,10 @@ void State::storeAction(GUI::Component& comp, Action* a){
 
 void State::addStateChangeCallback(const ActionContainer& ac, std::function<State*()> changeFunction){
 	stateChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);
+}
+
+void State::addBehaviourChangeCallback(const ActionContainer& ac, std::function<StateBehaviour*()> changeFunction){
+	behaviourChangeCallbacks_.emplace_back(ac.getAction(), changeFunction);
 }
 
 void State::setAction(const ActionContainer& ac){
@@ -54,13 +64,52 @@ void State::onActionFinish(){
 		app_.changeState(it->second());
 	}
 
-	//else remove action
-	else
-		action_ = nullptr;
+	//else check behaviour change functions
+	else{
+		auto it2 = std::find_if(behaviourChangeCallbacks_.begin(), behaviourChangeCallbacks_.end(),
+			[this](const BehaviourChangeCallback& callback){
+			return  callback.first == action_;
+		});
+
+		//change behaviour
+		if (it2 != behaviourChangeCallbacks_.end()){
+			action_ = nullptr;
+			delete behaviour_;
+			behaviour_ = it2->second();
+		}
+		
+		else
+			action_ = nullptr;
+	}
 }
 
 void State::onGuiComponentReleased(const GUI::Component& component){
 	setAction(component);
+}
+
+void State::onKeyPressed(sf::Keyboard::Key key){
+	assert(behaviour_);
+	behaviour_->onKeyPressed(key);
+}
+
+void State::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
+	assert(behaviour_);
+	behaviour_->onMouseButtonPressed(mouseButton);
+}
+
+void State::onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton){
+	assert(behaviour_);
+	behaviour_->onMouseButtonReleased(mouseButton);
+}
+
+void State::onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove){
+	assert(behaviour_);
+	behaviour_->onMouseMoved(mouseMove);
+}
+
+void State::noActionUpdate(const sf::Time& dt){
+	assert(behaviour_);
+	behaviour_->update(dt);
 }
 
 void State::update(const sf::Time& dt){
@@ -71,6 +120,11 @@ void State::update(const sf::Time& dt){
 	}
 	else
 		noActionUpdate(dt);
+}
+
+void State::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+	target.setView(camera_);
+	target.draw(*behaviour_);
 }
 
 std::ostringstream& State::getAppConsole(){

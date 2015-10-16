@@ -107,8 +107,8 @@ void Component::update(const sf::Time& dt){
 }
 
 void Component::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-	if (!active_)
-		return;
+	//if (!active_)
+	//	return;
 	states.transform *= getTransform();
 	target.draw(sprite_, states);
 }

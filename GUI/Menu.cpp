@@ -106,8 +106,8 @@ void Menu::update(const sf::Time& dt){
 }
 
 void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const{
-	if (!active_)
-		return;
+	//if (!active_)
+	//	return;
 	states.transform *= getTransform();
 	//states.shader = shader;
 	target.draw(sprite_, states);

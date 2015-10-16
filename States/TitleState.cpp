@@ -72,11 +72,13 @@ void TitleState::init(){
 	playButton3->setPosition(50.f, 200.f);
 	Actions::ActionQueue* queue3 = new Actions::ActionQueue();
 	queue3->addAction(new Actions::SetActive(menu_, false));
+	queue3->addAction(new Actions::MoveBy(sf::seconds(1.5f), menu_, 0.f, -600.f));
+	queue3->addAction(new Actions::MoveBy(sf::seconds(1.5f), menu2_, 0.f, 600.f));
 	queue3->addAction(new Actions::SetActive(menu2_, true));
 	storeAction(*playButton3, queue3);
 	//menu1
 	menu_.setTexture(*menuTex_);
-	menu_.setPosition(300.f, 300.f);
+	menu_.setPosition(300.f, 100.f);
 	menu_.addComponent(playButton);
 	menu_.addComponent(playButton2);
 	menu_.addComponent(playButton3);
@@ -88,11 +90,13 @@ void TitleState::init(){
 	menu2button->setPosition(50.f, 100.f);
 	Actions::ActionQueue* queue4 = new Actions::ActionQueue();
 	queue4->addAction(new Actions::SetActive(menu2_, false));
+	queue4->addAction(new Actions::MoveBy(sf::seconds(1.5f), menu2_, 0.f, -600.f));
+	queue4->addAction(new Actions::MoveBy(sf::seconds(1.5f), menu_, 0.f, 600.f));
 	queue4->addAction(new Actions::SetActive(menu_, true));
 	storeAction(*menu2button, queue4);
 	//menu2
 	menu2_.setTexture(*menuTex_);
-	menu2_.setPosition(600.f, 300.f);
+	menu2_.setPosition(600.f, -500.f);
 	menu2_.addComponent(menu2button);
 	menu2_.setActive(false);
 
@@ -168,5 +172,7 @@ void TitleState::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	//draw
 	//target.draw(world_);
 	target.draw(shape_);
-	target.draw(*behaviour_);
+	//target.draw(*behaviour_);
+	target.draw(menu_);
+	target.draw(menu2_);
 }

@@ -58,6 +58,10 @@ inline void VisitableCircleShape::accept(ShapeVisitor& v){
 	v.visit(*this);
 }
 
+inline VisitableShape* VisitableCircleShape::clone(){
+	return new VisitableCircleShape(*this);
+}
+
 /*****************************
 	VisitableRectangleShape
 *****************************/
@@ -102,6 +106,10 @@ inline void VisitableRectangleShape::accept(ShapeVisitor& v){
 	v.visit(*this);
 }
 
+inline VisitableShape* VisitableRectangleShape::clone(){
+	return new VisitableRectangleShape(*this);
+}
+
 /**************************
 	VisitableConvexShape
 **************************/
@@ -138,4 +146,8 @@ inline sf::Vector2f VisitableConvexShape::getPoint(unsigned int index) const{
 
 inline void VisitableConvexShape::accept(ShapeVisitor& v){
 	v.visit(*this);
+}
+
+inline VisitableShape* VisitableConvexShape::clone(){
+	return new VisitableConvexShape(*this);
 }

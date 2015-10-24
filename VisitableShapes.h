@@ -21,6 +21,7 @@ public:
 	virtual unsigned int getPointCount() const = 0;
 	virtual sf::Vector2f getPoint(unsigned int index) const = 0;
 	virtual void accept(ShapeVisitor& v) = 0;
+	virtual VisitableShape* clone() = 0;
 };
 
 class VisitableCircleShape : public VisitableShape{
@@ -33,6 +34,7 @@ public:
 	virtual unsigned int getPointCount() const override;
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
 	void accept(ShapeVisitor& v);
+	virtual VisitableShape* clone();
 private:
 	float radius_;
 	unsigned int pointCount_;
@@ -47,6 +49,7 @@ public:
 	virtual unsigned int getPointCount() const override;
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
 	void accept(ShapeVisitor& v);
+	virtual VisitableShape* clone();
 private:
 	sf::Vector2f size_;
 };
@@ -60,6 +63,7 @@ public:
 	void setPoint(unsigned int index, const sf::Vector2f& point);
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
 	void accept(ShapeVisitor& v);
+	virtual VisitableShape* clone();
 private:
 	std::vector<sf::Vector2f> points_;
 };

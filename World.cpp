@@ -3,23 +3,23 @@
 World::World()
 	:bounds_(600.f,400.f),
 	shape_(100,3),
-	vshape_(sf::Vector2f(100.f, 50.f)),
-	//rshape_(sf::Vector2f(100.f, 50.f)),
+	vshape_(new VisitableRectangleShape(sf::Vector2f(100.f, 50.f))),
 	camera_(),
 	cameraSpeed_(300.f,300.f),
 	currentZoom_(1.f),
 	zoomSpeed_(0.99f),
 	maxZoomIn_(0.1f),
-	maxZoomOut_(10.f){
-	//shape_.setPosition(200, 100);
+	maxZoomOut_(10.f),
+	entitySystem_(){
 	shape_.setOrigin(100.f, 100.f);
 	shape_.setFillColor(sf::Color::Green);
-	vshape_.setPosition(200.f, 200.f);
-	//vshape_.setOrigin(100.f, 100.f);
-	vshape_.setFillColor(sf::Color::Blue);
-	//rshape_.setPosition(200.f, 300.f);
-	////vshape_.setOrigin(100.f, 100.f);
-	//rshape_.setFillColor(sf::Color::Red);
+	vshape_->setPosition(200.f, 200.f);
+	vshape_->setFillColor(sf::Color::Blue);
+	//adding entities
+	entitySystem_.createRotatingEntity(sf::Vector2f(200.f, 200.f));
+	entitySystem_.createStaticEntity(sf::Vector2f(250.f, 200.f));
+	entitySystem_.createStaticEntity(sf::Vector2f(300.f, 200.f));
+	entitySystem_.createSolidEntity(sf::Vector2f(350.f, 200.f));
 }
 
 World::~World(){
@@ -41,7 +41,6 @@ const sf::View& World::getCamera() const{
 }
 
 void World::resetCamera(){
-	//camera_ = Context::instance().window_.getView();
 	sf::Vector2f newSize = camera_.getSize() / currentZoom_;
 	camera_.setSize(newSize);
 	camera_.setCenter(newSize / 2.f);
@@ -51,15 +50,11 @@ void World::resetCamera(){
 float World::getZoom() const{
 	return currentZoom_;
 }
-//
-//sf::Vector2f World::getWorldMousePos(const sf::RenderWindow& window) const{
-//	sf::View currentView = window.getView();
-//	window.setView(camera_);
-//	sf::Vector2f worldMousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-//	Context::instance().window_.setView(currentView);
-//}
 
 void World::update(const sf::Time& dt){
+	//updating entities
+	entitySystem_.update(dt);
+
 	//updating camera
 	//moving
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -70,16 +65,6 @@ void World::update(const sf::Time& dt){
 		camera_.move(0, cameraSpeed_.y*dt.asSeconds());
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		camera_.move(-cameraSpeed_.x*dt.asSeconds(), 0);
-
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-	//	std::cout << shape_.getPoint(0).x << " " << shape_.getPoint(0).y << std::endl
-	//		<< shape_.getPoint(1).x << " " << shape_.getPoint(1).y << std::endl
-	//		<< shape_.getPoint(2).x << " " << shape_.getPoint(2).y << std::endl
-	//		<< rshape_.getPoint(0).x << " " << rshape_.getPoint(0).y << std::endl
-	//		<< rshape_.getPoint(1).x << " " << rshape_.getPoint(1).y << std::endl
-	//		<< rshape_.getPoint(2).x << " " << rshape_.getPoint(2).y << std::endl
-	//		<< rshape_.getPoint(3).x << " " << rshape_.getPoint(3).y << std::endl;
-	//}
 
 	//zooming
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
@@ -96,15 +81,6 @@ void World::update(const sf::Time& dt){
 		else
 			camera_.zoom(1.f / zoomSpeed_);
 	}
-
-	//adding debug info
-	//sf::View currentView = Context::instance().window_.getView();
-	//Context::instance().window_.setView(camera_);
-	//sf::Vector2f worldMousePos = Context::instance().window_.mapPixelToCoords(Context::instance().getMousePos());
-	//Context::instance() << "Camera position: " << camera_.getCenter().x << " " << camera_.getCenter().y << "\n"
-	//	<< "Camera zoom: " << currentZoom_ << "\n"
-	//	<< "Mouse position in world: " << worldMousePos.x << " " << worldMousePos.y << "\n";
-	//Context::instance().window_.setView(currentView);
 }
 
 void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -120,8 +96,10 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
 	//drawing test shape
 	target.draw(shape_);
-	target.draw(vshape_);
-	//target.draw(rshape_);
+	target.draw(*vshape_);
+
+	//drawing entities
+	target.draw(entitySystem_);
 
 	target.setView(previousView);
 }

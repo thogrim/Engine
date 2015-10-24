@@ -100,12 +100,19 @@ void TitleState::init(){
 	menu2_.addComponent(menu2button);
 	menu2_.setActive(false);
 
+	//behaviour change
 	addBehaviourChangeCallback(*playButton3, [this](){
 		return new ChooseLevelBehaviour(menu2_);
 	});
 	addBehaviourChangeCallback(*menu2button, [this](){
 		return new MainMenuBehaviour(menu_);
 	});
+
+	//2nd button of 1st menu takes you to Game State
+	addStateChangeCallback(*playButton2, [this](){
+		return new GameState(*this);
+	});
+
 	behaviour_ = new MainMenuBehaviour(menu_);
 }
 

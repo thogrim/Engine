@@ -2,24 +2,19 @@
 
 World::World()
 	:bounds_(600.f,400.f),
-	shape_(100,3),
-	vshape_(new VisitableRectangleShape(sf::Vector2f(100.f, 50.f))),
+	player_(),
 	camera_(),
 	cameraSpeed_(300.f,300.f),
 	currentZoom_(1.f),
 	zoomSpeed_(0.99f),
 	maxZoomIn_(0.1f),
 	maxZoomOut_(10.f),
-	entitySystem_(){
-	shape_.setOrigin(100.f, 100.f);
-	shape_.setFillColor(sf::Color::Green);
-	vshape_->setPosition(200.f, 200.f);
-	vshape_->setFillColor(sf::Color::Blue);
-	//adding entities
+	entitySystem_(player_){
 	entitySystem_.createRotatingEntity(sf::Vector2f(200.f, 200.f));
 	entitySystem_.createStaticEntity(sf::Vector2f(250.f, 200.f));
 	entitySystem_.createStaticEntity(sf::Vector2f(300.f, 200.f));
 	entitySystem_.createSolidEntity(sf::Vector2f(350.f, 200.f));
+	entitySystem_.createAnimatedEntity(sf::Vector2f(400.f, 200.f));
 }
 
 World::~World(){
@@ -51,20 +46,49 @@ float World::getZoom() const{
 	return currentZoom_;
 }
 
+bool World::playerCollided() const{
+	return entitySystem_.playerCollided_;
+}
+
+
+void World::onKeyPressed(sf::Keyboard::Key key){
+	player_.onKeyPressed(key);
+}
+
+void World::onKeyReleased(sf::Keyboard::Key key){
+	player_.onKeyReleased(key);
+}
+
 void World::update(const sf::Time& dt){
-	//updating entities
+	//update entities
 	entitySystem_.update(dt);
 
+	//update player
+	player_.update(dt);
+
+	//check if entities in sight of player collide
+	entitySystem_.checkPlayerCollisions();
+
+	//update player's sight
+	entitySystem_.updatePlayerSight();
+
+	//check player collisions
+	//entitySystem_.checkPlayerCollisions();
+
 	//updating camera
-	//moving
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		camera_.move(0, -cameraSpeed_.y*dt.asSeconds());
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		camera_.move(cameraSpeed_.x*dt.asSeconds(), 0);
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		camera_.move(0, cameraSpeed_.y*dt.asSeconds());
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		camera_.move(-cameraSpeed_.x*dt.asSeconds(), 0);
+	//
+	//set camera position to player's
+	camera_.setCenter(player_.getMiddle());
+
+	////moving
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	//	camera_.move(0, -cameraSpeed_.y*dt.asSeconds());
+	//else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+	//	camera_.move(cameraSpeed_.x*dt.asSeconds(), 0);
+	//else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	//	camera_.move(0, cameraSpeed_.y*dt.asSeconds());
+	//else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	//	camera_.move(-cameraSpeed_.x*dt.asSeconds(), 0);
 
 	//zooming
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I)){
@@ -94,12 +118,11 @@ void World::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	bounds.setFillColor(sf::Color::Transparent);
 	target.draw(bounds);
 
-	//drawing test shape
-	target.draw(shape_);
-	target.draw(*vshape_);
-
 	//drawing entities
 	target.draw(entitySystem_);
+
+	//drawing player
+	target.draw(player_);
 
 	target.setView(previousView);
 }

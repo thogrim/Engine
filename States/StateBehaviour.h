@@ -7,6 +7,7 @@ public:
 	StateBehaviour() = default;
 	virtual ~StateBehaviour() = default;
 	virtual void onKeyPressed(sf::Keyboard::Key key) = 0;
+	virtual void onKeyReleased(sf::Keyboard::Key key) = 0;
 	virtual void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton) = 0;
 	virtual void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton) = 0;
 	virtual void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove) = 0;

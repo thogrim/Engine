@@ -13,6 +13,10 @@ void MainMenuBehaviour::onKeyPressed(sf::Keyboard::Key key){
 	//do nothing for now
 }
 
+void MainMenuBehaviour::onKeyReleased(sf::Keyboard::Key key){
+	//do nothing for now
+}
+
 void MainMenuBehaviour::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
 	mainMenu_.onMouseButtonPressed(mouseButton);
 }

@@ -1,7 +1,7 @@
 #include "TitleState.h"
 #include "GameState.h"
-#include "../Actions/Transforms.h"
-#include "../Actions/GUI.h"
+#include "../Actions/TransformActions.h"
+#include "../Actions/GuiActions.h"
 #include "../Actions/CompositeAction.h"
 #include "../Actions/ActionQueue.h"
 #include "../GUI/Button.h"
@@ -14,26 +14,7 @@ TitleState::TitleState(Application& app)
 	ac2_(),
 	buttonTex_(new sf::Texture()),
 	menuTex_(new sf::Texture()){
-	init();
-}
 
-TitleState::TitleState(const State& state)
-	:State(state),
-	//world_(),
-	shape_(sf::Vector2f(100.f, 100.f)),
-	ac_(),
-	ac2_(),
-	buttonTex_(new sf::Texture()),
-	menuTex_(new sf::Texture()){
-	init();
-}
-
-TitleState::~TitleState(){
-	delete buttonTex_;
-	delete menuTex_;
-}
-
-void TitleState::init(){
 	//world_.setCamera(camera_);
 	shape_.setFillColor(sf::Color::Yellow);
 	shape_.setPosition(100.f, 200.f);
@@ -46,7 +27,7 @@ void TitleState::init(){
 	//rotate shape by 180 deg and go to GameState
 	storeAction(ac3_, new Actions::Rotate(sf::seconds(1.f), shape_, 180.f));
 	addStateChangeCallback(ac3_, [this](){
-		return new GameState(*this);
+		return new GameState(app_);
 	});
 
 	//TEST OF GUI COMPONENT
@@ -110,11 +91,30 @@ void TitleState::init(){
 
 	//2nd button of 1st menu takes you to Game State
 	addStateChangeCallback(*playButton2, [this](){
-		return new GameState(*this);
+		return new GameState(app_);
 	});
 
 	behaviour_ = new MainMenuBehaviour(menu_);
 }
+
+//TitleState::TitleState(const State& state)
+//	:State(state),
+//	//world_(),
+//	shape_(sf::Vector2f(100.f, 100.f)),
+//	ac_(),
+//	ac2_(),
+//	buttonTex_(new sf::Texture()),
+//	menuTex_(new sf::Texture()){
+//	init();
+//}
+
+TitleState::~TitleState(){
+	delete buttonTex_;
+	delete menuTex_;
+}
+
+//void TitleState::init(){
+//}
 
 void TitleState::onKeyPressed(sf::Keyboard::Key key){
 	switch (key){

@@ -1,17 +1,22 @@
-/**************************************
-	Reimplemented basic sfml shapes
-	to allow applying Visitor pattern
-	
-	IMPORTANT:
-	always call update() method when
-	attributes are changed!
-**************************************/
+////////////////////////////////////////////////////////////
+//
+//	Reimplemented basic sfml shapes to allow applying 
+//	Visitor pattern
+//	
+//	These shapes provide the same functionality as sfml
+//	shapes(sf::RectangleShape, sf::CircleShape, 
+//	sf::ConvexShape). They also implement accept() method
+//	used for visitors, and clone() method so you can
+//	copy them if you store them dynamically as pointer
+//	to VisitableShape
+//
+////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <cassert>
 #include <SFML/Graphics/Shape.hpp>
-#include "ShapeVisitor.h"
+#include "ShapeVisitors/ShapeVisitor.h"
 
 
 class VisitableShape : public sf::Shape{
@@ -20,7 +25,7 @@ public:
 	virtual ~VisitableShape();
 	virtual unsigned int getPointCount() const = 0;
 	virtual sf::Vector2f getPoint(unsigned int index) const = 0;
-	virtual void accept(ShapeVisitor& v) = 0;
+	virtual void accept(ShapeVisitor& v, const sf::Vector2f& position) const = 0;
 	virtual VisitableShape* clone() = 0;
 };
 
@@ -33,7 +38,7 @@ public:
 	void setPointCount(unsigned int count);
 	virtual unsigned int getPointCount() const override;
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
-	void accept(ShapeVisitor& v);
+	void accept(ShapeVisitor& v, const sf::Vector2f& position) const;
 	virtual VisitableShape* clone();
 private:
 	float radius_;
@@ -48,7 +53,7 @@ public:
 	const sf::Vector2f& getSize() const;
 	virtual unsigned int getPointCount() const override;
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
-	void accept(ShapeVisitor& v);
+	void accept(ShapeVisitor& v, const sf::Vector2f& position) const;
 	virtual VisitableShape* clone();
 private:
 	sf::Vector2f size_;
@@ -62,7 +67,7 @@ public:
 	virtual unsigned int getPointCount() const override;
 	void setPoint(unsigned int index, const sf::Vector2f& point);
 	virtual sf::Vector2f getPoint(unsigned int index) const override;
-	void accept(ShapeVisitor& v);
+	void accept(ShapeVisitor& v, const sf::Vector2f& position) const;
 	virtual VisitableShape* clone();
 private:
 	std::vector<sf::Vector2f> points_;

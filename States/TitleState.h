@@ -9,11 +9,11 @@
 class TitleState: public State{
 public:
 	TitleState(Application& app);
-	TitleState(const State& state);
+	//TitleState(const State& state);
 	~TitleState();
 
 protected:
-	void init();
+	//void init();
 	void withActionUpdate(const sf::Time& dt);
 	void noActionUpdate(const sf::Time& dt);
 	void onKeyPressed(sf::Keyboard::Key key);

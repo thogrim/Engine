@@ -11,6 +11,7 @@ public:
 	ChooseLevelBehaviour(GUI::Menu& chooseLevelMenu);
 	~ChooseLevelBehaviour();
 	void onKeyPressed(sf::Keyboard::Key key);
+	void onKeyReleased(sf::Keyboard::Key key);
 	void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton);
 	void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton);
 	void onMouseMoved(const sf::Event::MouseMoveEvent& mouseMove);

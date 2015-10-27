@@ -102,6 +102,11 @@ void Application::processEvents(){
 				state_->onKeyPressed(ev.key.code);
 			break;
 
+		//RELEASING KEY
+		case sf::Event::KeyReleased:
+			state_->onKeyReleased(ev.key.code);
+			break;
+
 		//PRESSING MOUSE BUTTON
 		case sf::Event::MouseButtonPressed:
 			//if (ev.mouseButton.button == sf::Mouse::Left){

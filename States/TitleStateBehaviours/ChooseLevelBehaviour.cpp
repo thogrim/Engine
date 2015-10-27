@@ -13,6 +13,10 @@ void ChooseLevelBehaviour::onKeyPressed(sf::Keyboard::Key key){
 	//do nothing for now
 }
 
+void ChooseLevelBehaviour::onKeyReleased(sf::Keyboard::Key key){
+	//do nothing for now
+}
+
 void ChooseLevelBehaviour::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
 	levelMenu_.onMouseButtonPressed(mouseButton);
 }

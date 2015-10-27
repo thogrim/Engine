@@ -12,14 +12,14 @@ State::State(Application& app)
 	camera_(app_.getWindow().getView()){
 }
 
-State::State(const State& state)
-	:app_(state.app_),
-	action_(nullptr),
-	behaviour_(nullptr),
-	stateChangeCallbacks_(),
-	behaviourChangeCallbacks_(),
-	camera_(app_.getWindow().getView()){
-}
+//State::State(const State& state)
+//	:app_(state.app_),
+//	action_(nullptr),
+//	behaviour_(nullptr),
+//	stateChangeCallbacks_(),
+//	behaviourChangeCallbacks_(),
+//	camera_(app_.getWindow().getView()){
+//}
 
 State::~State(){
 	delete behaviour_;
@@ -92,6 +92,11 @@ void State::onKeyPressed(sf::Keyboard::Key key){
 	behaviour_->onKeyPressed(key);
 }
 
+void State::onKeyReleased(sf::Keyboard::Key key){
+	assert(behaviour_);
+	behaviour_->onKeyReleased(key);
+}
+
 void State::onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton){
 	assert(behaviour_);
 	behaviour_->onMouseButtonPressed(mouseButton);
@@ -127,9 +132,9 @@ void State::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 	target.draw(*behaviour_);
 }
 
-std::ostringstream& State::getAppConsole(){
-	return app_.getConsole();
-}
+//std::ostringstream& State::getAppConsole(){
+//	return app_.getConsole();
+//}
 
 sf::Vector2f State::getMousePos(const sf::View& view){
 	//get window mouse pos

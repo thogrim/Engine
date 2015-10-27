@@ -7,14 +7,15 @@
 class GameState: public State{
 public:
 	GameState(Application& app);
-	GameState(const State& state);
+	//GameState(const State& state);
 	~GameState();
 
 public:
-	void init();
+	//void init();
 	void withActionUpdate(const sf::Time& dt);
 	void noActionUpdate(const sf::Time& dt);
 	void onKeyPressed(sf::Keyboard::Key key);
+	void onKeyReleased(sf::Keyboard::Key key);
 	void onResized(const sf::Event::SizeEvent& size);
 	void onMouseButtonPressed(const sf::Event::MouseButtonEvent& mouseButton);
 	void onMouseButtonReleased(const sf::Event::MouseButtonEvent& mouseButton);
@@ -25,7 +26,7 @@ private:
 	World world_;
 	sf::RectangleShape shape_;
 	ActionContainer ac_;
-	ActionContainer ac2_;
-	ActionContainer ac3_;
+	//ActionContainer ac2_;
+	//ActionContainer ac3_;
 };
 

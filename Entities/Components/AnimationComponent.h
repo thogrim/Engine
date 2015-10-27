@@ -2,15 +2,18 @@
 
 #include <vector>
 #include <SFML/System/Time.hpp>
-#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
 
 struct AnimationComponent{
-	AnimationComponent(const std::vector<sf::Time, sf::IntRect>& frames)
-		:frames_(frames),
+	AnimationComponent(const sf::Vector2i& frameSize, unsigned int nFrames, const sf::Time& frameDuration)
+		:frameSize_(frameSize),
+		nFrames_(nFrames),
 		currentFrame_(0),
-		frameDuration_(sf::Time::Zero){
+		frameDuration_(frameDuration){
 	}
-	std::vector<sf::Time, sf::IntRect> frames_;
+	const sf::Vector2i frameSize_;
+	const unsigned int nFrames_;
 	unsigned int currentFrame_;
-	sf::Time frameDuration_;
+	const sf::Time frameDuration_;
+	sf::Time timePassed_;
 };

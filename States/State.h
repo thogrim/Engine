@@ -14,7 +14,7 @@ class StateBehaviour;
 class State: public GuiObserver, public sf::Drawable, public ActionObserver{
 public:
 	State(Application& app);
-	State(const State& state);
+	//State(const State& state);
 	virtual ~State();
 
 protected:
@@ -22,7 +22,8 @@ protected:
 	//to avoid duplicate code in:
 	//MyState(Application& app)
 	//MyState(const State& state)
-	virtual void init()=0;
+	//virtual void init()=0;
+
 	//stores action a in container ac
 	void storeAction(ActionContainer& ac, Action* a);
 	//stores action a in GUI component
@@ -44,6 +45,8 @@ public:
 	void onGuiComponentReleased(const GUI::Component& component);
 	//method performed when key is pressed
 	virtual void onKeyPressed(sf::Keyboard::Key key);
+	//method performed when key is released
+	virtual void onKeyReleased(sf::Keyboard::Key key);
 	//method performed when window is resized
 	virtual void onResized(const sf::Event::SizeEvent& size) = 0;
 	//method performed when mouse button is pressed
@@ -70,13 +73,14 @@ protected:
 	//other helpful methods
 
 	//get application's console
-	std::ostringstream& getAppConsole();
+	//std::ostringstream& getAppConsole();
 	//get mouse position relative to view
 	sf::Vector2f getMousePos(const sf::View& view);
 
-private:
 	//Reference to application
 	Application& app_;
+
+private:
 	//current action to perform
 	Action* action_;
 

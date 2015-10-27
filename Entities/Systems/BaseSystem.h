@@ -3,14 +3,6 @@
 #include <unordered_map>
 #include <cassert>
 
-//class BaseSystem{
-//public:
-//	BaseSystem();
-//	virtual ~BaseSystem();
-//private:
-//	static unsigned int
-//};
-
 template <typename ComponentType>
 class BaseSystem{
 public:
@@ -18,10 +10,11 @@ public:
 	virtual ~BaseSystem() = default;
 
 	ComponentType& getComponent(unsigned int);
+
 	void addComponent(unsigned int ID, const ComponentType& component);
 	void removeComponent(unsigned int ID);
 
-protected:
+//protected:
 	std::unordered_map<unsigned int, ComponentType> components_;
 };
 

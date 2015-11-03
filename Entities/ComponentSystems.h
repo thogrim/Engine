@@ -6,3 +6,4 @@
 #include "Systems/SpriteSystem.h"
 #include "Systems/AnimationSystem.h"
 #include "Systems/CollisionSystem.h"
+#include "Systems/AISystem.h"

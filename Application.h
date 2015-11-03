@@ -63,7 +63,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	/// \brief Change game state
 	/// 
-	/// This method changes current state. It also destoys previous state
+	/// This method changes current state. It also destoys previous one
 	///
 	/// \param state Pointer to new game state
 	///////////////////////////////////////////////////////////////////////////
@@ -104,18 +104,18 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	void render();
 
-	/// Application's window
+	// Application's window
 	sf::RenderWindow window_;
 
-	/// Indicates wether window has focus
+	// Indicates wether window has focus
 	bool hasFocus_;
 
-	/// Pointer to current game state
+	// Pointer to current game state
 	std::unique_ptr<State> state_;
 
-	/// Console displaying useful information like frames per second
-	/// and updates per second. You can show more information with
-	/// getConsole() method
+	// Console displaying useful information like frames per second
+	// and updates per second. You can show more information with
+	// getConsole() method
 	struct Console{
 		Console();
 		void update(const sf::Time& dt);

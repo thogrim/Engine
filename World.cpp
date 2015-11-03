@@ -14,7 +14,10 @@ World::World()
 	entitySystem_.createStaticEntity(sf::Vector2f(250.f, 200.f));
 	entitySystem_.createStaticEntity(sf::Vector2f(300.f, 200.f));
 	entitySystem_.createSolidEntity(sf::Vector2f(350.f, 200.f));
+	entitySystem_.createSolidEntity(sf::Vector2f(350.f, 370.f));
 	entitySystem_.createAnimatedEntity(sf::Vector2f(400.f, 200.f));
+	//entitySystem_.createSolidMovingEntity(sf::Vector2f(400.f, 100.f));
+	entitySystem_.createSimpleBehavEntity(sf::Vector2f(400.f,150.f));
 }
 
 World::~World(){
@@ -60,6 +63,8 @@ void World::onKeyReleased(sf::Keyboard::Key key){
 }
 
 void World::update(const sf::Time& dt){
+	//process events
+	entitySystem_.processEvents();
 	//update entities
 	entitySystem_.update(dt);
 

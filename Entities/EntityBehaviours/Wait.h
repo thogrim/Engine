@@ -4,6 +4,7 @@
 
 class Wait: public EntityBehaviour{
 public:
+	Wait(const std::vector<EntityEvent>& events, const sf::Time& duration);
 	Wait(const EntityEvent& ev, const sf::Time& duration);
 	//~Wait();
 	void update(const sf::Time& dt);

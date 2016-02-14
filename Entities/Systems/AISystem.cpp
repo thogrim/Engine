@@ -25,16 +25,18 @@ void AISystem::onEntityEvent(){
 	AIComponent& ai = components_.at(processedComp_);
 	unsigned int& currentAiBhvr = ai.currentBehaviour_;
 
-	//get event from currently processed behaviour
-	EntityEvent ev = ai.behaviours_.at(currentAiBhvr)->getEvent();
-
-	//append unique ID of entity that generated event
-	ev.uid_ = processedComp_; //not needed?
-
-	//push this event into EntitySystem's event queue
-	entitySystem_.pushEvent(ev);
+	//get behaviour's events and push them
+	//into EntitySystem's event queue
+	entitySystem_.pushEvents(ai.behaviours_.at(currentAiBhvr)->getEvents());
 
 	//change ai's current behaviour
 	if (++currentAiBhvr >= ai.behaviours_.size())
 		currentAiBhvr = 0;
+
+	//old code
+	//get event from currently processed behaviour
+	//ai.behaviours_.at(currentAiBhvr)->getEvents();
+
+	//append unique ID of entity that generated event
+	//ev.uid_ = processedComp_; //not needed?
 }

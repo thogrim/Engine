@@ -10,6 +10,7 @@ World::World()
 	maxZoomIn_(0.1f),
 	maxZoomOut_(10.f),
 	entitySystem_(player_){
+	entitySystem_.createSimpleBehavEntity(sf::Vector2f(300.f,150.f));
 	entitySystem_.createRotatingEntity(sf::Vector2f(200.f, 200.f));
 	entitySystem_.createStaticEntity(sf::Vector2f(250.f, 200.f));
 	entitySystem_.createStaticEntity(sf::Vector2f(300.f, 200.f));
@@ -17,7 +18,6 @@ World::World()
 	entitySystem_.createSolidEntity(sf::Vector2f(350.f, 370.f));
 	entitySystem_.createAnimatedEntity(sf::Vector2f(400.f, 200.f));
 	//entitySystem_.createSolidMovingEntity(sf::Vector2f(400.f, 100.f));
-	entitySystem_.createSimpleBehavEntity(sf::Vector2f(400.f,150.f));
 }
 
 World::~World(){

@@ -77,11 +77,6 @@ std::ostringstream& Application::getConsole(){
 	return console_.stream_;
 }
 
-//std::ostringstream& Application::operator<<(const std::string& info){
-//	console_.stream_ << info;
-//	return console_.stream_;
-//}
-
 void Application::processEvents(){
 	sf::Event ev;
 	while (window_.pollEvent(ev)){
@@ -109,11 +104,6 @@ void Application::processEvents(){
 
 		//PRESSING MOUSE BUTTON
 		case sf::Event::MouseButtonPressed:
-			//if (ev.mouseButton.button == sf::Mouse::Left){
-			//	std::cout << "left mouse button pressed\n"
-			//		<< "x= " << ev.mouseButton.x << std::endl
-			//		<< "y= " << ev.mouseButton.y << std::endl;
-			//}
 			state_->onMouseButtonPressed(ev.mouseButton);
 			break;
 

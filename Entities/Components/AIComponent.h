@@ -5,7 +5,15 @@
 #include "../EntityBehaviours/EntityBehaviour.h"
 
 struct AIComponent{
-	AIComponent(const std::initializer_list<EntityBehaviour*>& behaviours)
+	//AIComponent(const std::initializer_list<EntityBehaviour*>& behaviours)
+	//	:behaviours_(),
+	//	currentBehaviour_(0){
+	//	behaviours_.reserve(behaviours.size());
+	//	for (const auto& bhvr : behaviours){
+	//		behaviours_.emplace_back(bhvr);
+	//	}
+	//}
+	AIComponent(const std::vector<EntityBehaviour*>& behaviours)
 		:behaviours_(),
 		currentBehaviour_(0){
 		behaviours_.reserve(behaviours.size());

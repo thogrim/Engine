@@ -28,8 +28,9 @@ struct EntityEvent{
 	//};
 
 	enum EventType{
+		VelocityChange,		///< Entity requested velocity change
+		PositionChange,		///< Entity requested position change
 		//AnimationChange,	//animation change request
-		VelocityChange,		//velocity change request
 		//TerrainHit		//entity collided with terrain
 		DestroyEntity		//destroy entity request
 	};
@@ -39,7 +40,7 @@ struct EntityEvent{
 	//	type_(){
 	//}
 
-	unsigned int uid_;	///< unique ID of entity that created event
+	unsigned int uid_;	///< Unique ID of entity that created event
 	EventType type_;	///< Type of the event
 
 	union{
@@ -47,8 +48,11 @@ struct EntityEvent{
 		//so that's why members are in unnamed struct
 		//AnimationChange 	animType_; 	///< New animation Type do display
 		//struct{ VelocityChangeEvent velocity_; };	///< Entity requested velocity change
+		struct{ 
+			sf::Vector2f newVelocity_;	///< Entity's new velocity 
+		};
 		struct{
-			sf::Vector2f newVelocity_;	///< Entity requested velocity change
+			sf::Vector2f newPosition_;	///< Entity's new position
 		};
 	};
 };

@@ -16,9 +16,6 @@ namespace GUI{
 		void setText(const std::string& string, const sf::Font& font, unsigned int characterSize);
 		void setTextPosition(float x, float y);
 		void setActive(bool active);
-		//void setColor(sf::Color color);
-		//sf::Sprite& getSprite();
-		//std::vector<Component*>& getComponents();
 		void onMouseButtonPressed(sf::Event::MouseButtonEvent mouseButton);
 		void onMouseButtonReleased(sf::Event::MouseButtonEvent mouseButton);
 		void onMouseMoved(sf::Event::MouseMoveEvent mouseMove);

@@ -44,7 +44,7 @@ public:
 
 	void checkPlayerCollisions();
 	void updatePlayerSight();
-	void pushEvent(const EntityEvent& ev);
+	void pushEvents(const std::vector<EntityEvent>& events);
 
 private:
 	//unsigned int getNewID();
@@ -57,7 +57,8 @@ private:
 	void addCollisionComponent(VisitableShape* shape);
 	void addSpriteComponent(const sf::Texture& texture);
 	void addAnimationComponent(const sf::Vector2i& frameSize, unsigned int nFrames, const sf::Time& frameDuration);
-	void addAiComponent(const std::initializer_list<EntityBehaviour*>& behaviours);
+	//void addAiComponent(const std::initializer_list<EntityBehaviour*>& behaviours);
+	void addAiComponent(const std::vector<EntityBehaviour*>& behaviours);
 public:
 	void processEvents();
 	void update(const sf::Time& dt);

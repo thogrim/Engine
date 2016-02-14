@@ -11,20 +11,18 @@
 class Action;
 class StateBehaviour;
 
+/**
+ * \brief Represents game state
+ */
 class State: public GuiObserver, public sf::Drawable, public ActionObserver{
 public:
 	State(Application& app);
-	//State(const State& state);
 	virtual ~State();
 
 protected:
-	//method called at the end of constructor
-	//to avoid duplicate code in:
-	//MyState(Application& app)
-	//MyState(const State& state)
-	//virtual void init()=0;
-
-	//stores action a in container ac
+	/**
+	 * stores action a in container ac
+	 */
 	void storeAction(ActionContainer& ac, Action* a);
 	//stores action a in GUI component
 	void storeAction(GUI::Component& comp, Action* a);
@@ -35,8 +33,6 @@ protected:
 	//sets state to perform action from
 	//provided action container
 	void setAction(const ActionContainer& ac);
-	//sets current behaviour
-	//void setBehaviour(StateBehaviour* newBehaviour);
 
 public:
 	//method performed when action has ended

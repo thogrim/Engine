@@ -1,5 +1,12 @@
 #include "Wait.h"
 
+Wait::Wait(const std::vector<EntityEvent>& events, const sf::Time& duration)
+	:EntityBehaviour(events),
+	timeLeft_(duration),
+	duration_(duration){
+}
+
+
 Wait::Wait(const EntityEvent& ev, const sf::Time& duration)
 	:EntityBehaviour(ev),
 	timeLeft_(duration),

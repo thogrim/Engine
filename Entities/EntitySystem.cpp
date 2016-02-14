@@ -38,9 +38,7 @@ EntitySystem::EntitySystem(Player& player)
 void EntitySystem::addTransformComponent(const sf::Vector2f& position){
 	sf::Transformable transform{};
 	transform.setPosition(position);
-	//transformSystem_.addComponent(lastID_, std::move(sf::Transformable{}));
 	transformSystem_.addComponent(lastID_, transform);
-	//transformSystem_.components_[lastID_].setPosition(position);
 }
 
 void EntitySystem::addVelocityComponent(const sf::Vector2f& velocity){
@@ -67,30 +65,23 @@ void EntitySystem::addAnimationComponent(const sf::Vector2i& frameSize, unsigned
 	animationSystem_.addComponent(lastID_, AnimationComponent{frameSize,nFrames,frameDuration});
 }
 
-void EntitySystem::addAiComponent(const std::initializer_list<EntityBehaviour*>& behaviours){
+//void EntitySystem::addAiComponent(const std::initializer_list<EntityBehaviour*>& behaviours){
+//	for (auto& bhvr : behaviours){
+//		bhvr->setObserver(&aiSystem_);
+//	}
+//	aiSystem_.addComponent(lastID_, AIComponent{behaviours});
+//}
+
+void EntitySystem::addAiComponent(const std::vector<EntityBehaviour*>& behaviours){
 	for (auto& bhvr : behaviours){
 		bhvr->setObserver(&aiSystem_);
+		for (auto& ev : bhvr->getEvents())
+			ev.uid_ = lastID_;
 	}
-	aiSystem_.addComponent(lastID_, AIComponent{behaviours});
+	aiSystem_.addComponent(lastID_, AIComponent(behaviours));
 }
 
 void EntitySystem::createRotatingEntity(const sf::Vector2f& position){
-	//get new ID
-	//unsigned int ID = getNewID();
-
-	////transform component
-	//sf::Transformable transformComp;
-	//transformComp.setPosition(position);
-	//transformSystem_.addComponent(ID, transformComp);
-	//sf::Transformable& transform = transformSystem_.getComponent(ID);
-
-	////rotating component
-	//rotateSystem_.addComponent(ID, RotateComponent(90.f,transform));
-
-	////sprite component
-	//SpriteComponent sc(*textures_[0],transform);
-	//spriteSystem_.addComponent(ID, SpriteComponent(*textures_[1], transform));
-
 	getNewID();
 	addTransformComponent(position);
 	addRotateComponent(90.f);
@@ -98,39 +89,12 @@ void EntitySystem::createRotatingEntity(const sf::Vector2f& position){
 }
 
 void EntitySystem::createStaticEntity(const sf::Vector2f& position){
-	////get new ID
-	//unsigned int ID = getNewID();
-
-	////transform component
-	//sf::Transformable transformComp;
-	//transformComp.setPosition(position);
-	//transformSystem_.addComponent(ID, transformComp);
-	//sf::Transformable& transform = transformSystem_.getComponent(ID);
-
-	////sprite component
-	//spriteSystem_.addComponent(ID, SpriteComponent(*textures_[0], transform));
-
 	getNewID();
 	addTransformComponent(position);
 	addSpriteComponent(*textures_[0]);
 }
 
 void EntitySystem::createSolidEntity(const sf::Vector2f& position){
-	//get new ID
-	//unsigned int ID = getNewID();
-
-	////transform component
-	//sf::Transformable transformComp;
-	//transformComp.setPosition(position);
-	//transformSystem_.addComponent(ID, transformComp);
-	//sf::Transformable& transform = transformSystem_.getComponent(ID);
-
-	////sprite component
-	//spriteSystem_.addComponent(ID, SpriteComponent(*textures_[0], transform));
-	//
-	////collision component
-	//collisionSystem_.addComponent(ID, CollisionComponent(new VisitableRectangleShape(sf::Vector2f(30.f, 30.f)), transform));
-	
 	getNewID();
 	addTransformComponent(position);
 	addSpriteComponent(*textures_[1]);
@@ -138,25 +102,6 @@ void EntitySystem::createSolidEntity(const sf::Vector2f& position){
 }
 
 void EntitySystem::createAnimatedEntity(const sf::Vector2f& position){
-	////get new ID
-	//unsigned int ID = getNewID();
-
-	////transform component
-	//sf::Transformable transformComp;
-	//transformComp.setPosition(position);
-	//transformSystem_.addComponent(ID, transformComp);
-	//sf::Transformable& transform = transformSystem_.getComponent(ID);
-
-	////animation component
-	//sf::Vector2i frameSize(30, 30);
-	//AnimationComponent animComp(frameSize, 3, sf::seconds(1.f));
-	//animationSystem_.addComponent(ID, animComp);
-
-	////sprite component
-	//SpriteComponent sprite(*textures_[2], transform);
-	//sprite.sprite_.setTextureRect(sf::IntRect(0,0,frameSize.x,frameSize.y));
-	//spriteSystem_.addComponent(ID, sprite);
-
 	getNewID();
 	addTransformComponent(position);
 	addAnimationComponent(sf::Vector2i(30,30), 3, sf::seconds(1.f));
@@ -164,23 +109,6 @@ void EntitySystem::createAnimatedEntity(const sf::Vector2f& position){
 }
 
 void EntitySystem::createSolidMovingEntity(const sf::Vector2f& position){
-	////get new ID
-	//unsigned int ID = getNewID();
-
-	////transform component
-	//sf::Transformable transformComp;
-	//transformComp.setPosition(position);
-	//transformSystem_.addComponent(ID, transformComp);
-	//sf::Transformable& transform = transformSystem_.getComponent(ID);
-
-	////velocity component
-	//velocitySystem_.addComponent(ID, VelocityComponent(sf::Vector2f(-20.f,0),transform));
-
-	////sprite component
-	//spriteSystem_.addComponent(ID, SpriteComponent(*textures_[0], transform));
-
-	////collision component
-	//collisionSystem_.addComponent(ID, CollisionComponent(new VisitableRectangleShape(sf::Vector2f(30.f, 30.f)), transform));
 	getNewID();
 	addTransformComponent(position);
 	addVelocityComponent(sf::Vector2f(-20.f, 0));
@@ -193,13 +121,20 @@ void EntitySystem::createSimpleBehavEntity(const sf::Vector2f& position){
 	addTransformComponent(position);
 	addVelocityComponent(sf::Vector2f(-10.f, 0.f));
 	addSpriteComponent(*textures_[0]);
+	addCollisionComponent(new VisitableRectangleShape(sf::Vector2f(30.f, 30.f)));
+
+	//when creating event i can append ID already here instead of
+	//doing this in AI System when notified
 
 	//ai component
 	//
 	//event of first behaviour
 	EntityEvent ev1;
 	ev1.type_ = EntityEvent::VelocityChange;
-	ev1.newVelocity_ = sf::Vector2f(100.f, 0.f);
+	ev1.newVelocity_ = sf::Vector2f(200.f, 0.f);
+	EntityEvent ev11;
+	ev11.type_ = EntityEvent::PositionChange;
+	ev11.newPosition_ = sf::Vector2f(300.f, 150.f);
 	//event of second behaviour
 	EntityEvent ev2;
 	ev2.type_ = EntityEvent::VelocityChange;
@@ -207,16 +142,19 @@ void EntitySystem::createSimpleBehavEntity(const sf::Vector2f& position){
 	//event of third behaviour
 	EntityEvent ev3;
 	ev3.type_ = EntityEvent::VelocityChange;
-	ev3.newVelocity_ = sf::Vector2f(-100.f, 0.f);
+	ev3.newVelocity_ = sf::Vector2f(-200.f, 0.f);
+	EntityEvent ev33;
+	ev33.type_ = EntityEvent::PositionChange;
+	ev33.newPosition_ = sf::Vector2f(300.f, 100.f);
 	//event of fourth behaviour
 	EntityEvent ev4;
 	ev4.type_ = EntityEvent::VelocityChange;
 	ev4.newVelocity_ = sf::Vector2f(0.f, 0.f);
 	//adding ai comp to ai system
 	addAiComponent({
-		new Wait(ev1, sf::seconds(1.f)),
+		new Wait({ ev1, ev11 }, sf::seconds(1.f)),
 		new Wait(ev2, sf::seconds(1.f)),
-		new Wait(ev3, sf::seconds(1.f)),
+		new Wait({ ev3, ev33 }, sf::seconds(1.f)),
 		new Wait(ev4, sf::seconds(1.f))
 	});
 }
@@ -257,6 +195,9 @@ void EntitySystem::processEvents(){
 		//get event from the event queue
 		EntityEvent ev = eventQueue_.front();
 		switch (ev.type_){
+		case EntityEvent::PositionChange:
+			transformSystem_.components_.at(ev.uid_).setPosition(ev.newPosition_);
+			break;
 		case EntityEvent::VelocityChange:
 			velocitySystem_.components_.at(ev.uid_).velocity_ = ev.newVelocity_;
 			break;
@@ -293,8 +234,10 @@ void EntitySystem::updatePlayerSight(){
 	}
 }
 
-void EntitySystem::pushEvent(const EntityEvent& ev){
-	eventQueue_.push(ev);
+void EntitySystem::pushEvents(const std::vector<EntityEvent>& events){
+	for (auto ev : events){
+		eventQueue_.push(ev);
+	}
 }
 
 void EntitySystem::update(const sf::Time& dt){
